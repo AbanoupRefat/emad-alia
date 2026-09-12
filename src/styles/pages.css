@@ -112,12 +112,40 @@
   color: var(--text-muted);
 }
 
+.closing-credit-container {
+  margin-top: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  border-top: 1px dashed var(--card-border);
+  padding-top: var(--space-3);
+  width: 100%;
+}
+
+.closing-credit-name {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+.closing-credit-subtext {
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  opacity: 0.85;
+  margin: 0.2rem 0 0.4rem;
+}
+
 .closing-social-links {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
-  margin-top: var(--space-3);
+  margin-top: 0.2rem;
   flex-wrap: wrap;
 }
 
@@ -146,15 +174,6 @@
   color: #ffffff;
   transform: translateY(-2px);
   box-shadow: 0 8px 20px rgba(117, 75, 77, 0.25);
-}
-
-.closing-credit {
-  margin-top: var(--space-4);
-  font-family: var(--font-body);
-  font-size: 0.82rem;
-  letter-spacing: 0.08em;
-  color: var(--text-muted);
-  opacity: 0.85;
 }
 
 .closing-credit-link {
