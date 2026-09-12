@@ -11,7 +11,7 @@ export default function Page1Hero() {
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
-          gap: "0.5rem",
+          gap: "0.6rem",
         }}
       >
         {/* Eyebrow */}
@@ -22,6 +22,7 @@ export default function Page1Hero() {
             margin: 0,
             fontSize: "clamp(0.85rem, 1.8vw, 1.1rem)",
             letterSpacing: "0.18em",
+            fontWeight: 500,
           }}
         >
           Our Wedding
@@ -38,27 +39,18 @@ export default function Page1Hero() {
           }}
         />
 
-        {/* English names */}
+        {/* Names */}
         <h1
           className="title-en"
           style={{
             margin: 0,
             textShadow: "0 2px 24px rgba(168,106,101,0.35)",
+            fontStyle: "normal",
+            fontWeight: 500,
           }}
         >
           {client.namesEn.groom} &amp; {client.namesEn.bride}
         </h1>
-
-        {/* Arabic names */}
-        <h2
-          className="title-ar"
-          style={{
-            color: "var(--text-primary)",
-            margin: "0.15em 0 0",
-          }}
-        >
-          {client.namesAr.groom} &amp; {client.namesAr.bride}
-        </h2>
 
         {/* Decorative rule */}
         <div
@@ -75,9 +67,10 @@ export default function Page1Hero() {
         <p
           style={{
             color: "var(--text-muted)",
-            fontFamily: "var(--font-display)",
-            fontStyle: "italic",
-            fontSize: "clamp(0.9rem, 1.5vw, 1.1rem)",
+            fontFamily: "var(--font-body)",
+            fontStyle: "normal",
+            fontWeight: 500,
+            fontSize: "clamp(1rem, 1.8vw, 1.2rem)",
             letterSpacing: "0.12em",
             margin: 0,
           }}
@@ -87,7 +80,7 @@ export default function Page1Hero() {
       </div>
 
       {/* Scroll hint */}
-      <p className="scroll-hint" style={{ color: "var(--text-muted)", opacity: 0.55 }}>
+      <p className="scroll-hint" style={{ color: "var(--text-muted)", opacity: 0.75 }}>
         scroll ↓
       </p>
     </section>
