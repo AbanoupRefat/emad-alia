@@ -52,6 +52,22 @@ export default function Page1Hero() {
           {client.namesEn.groom} &amp; {client.namesEn.bride}
         </h1>
 
+        {/* Arabic Names */}
+        {client.namesAr && (
+          <h2
+            style={{
+              fontFamily: "'Amiri', serif",
+              fontSize: "clamp(1.6rem, 3.5vw, 2.5rem)",
+              margin: "-0.2rem 0 0",
+              color: "var(--plum-wine)",
+              direction: "rtl",
+              fontWeight: 500,
+            }}
+          >
+            {client.namesAr.groom} &amp; {client.namesAr.bride}
+          </h2>
+        )}
+
         {/* Decorative rule */}
         <div
           aria-hidden="true"

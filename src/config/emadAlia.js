@@ -2,6 +2,7 @@
 // duplicate this file, swap the values, and point src/config/index.js at it.
 export const client = {
   namesEn: { groom: "Emad", bride: "Alia" },
+  namesAr: { groom: "عماد", bride: "عليا" },
 
   weddingDateISO: "2026-10-07T19:00:00+03:00", // Wed, 7 Oct 2026, 7:00 PM Cairo time
   weddingDayLabel: "Wednesday",
