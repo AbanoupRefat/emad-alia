@@ -1,0 +1,32 @@
+.global-background {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  overflow: hidden;
+}
+
+.global-bg-element {
+  position: absolute;
+  filter: blur(15px);
+  opacity: 0.4;
+  animation-name: lovely-float;
+  animation-iteration-count: infinite;
+  animation-timing-function: ease-in-out;
+  animation-direction: alternate;
+}
+
+@keyframes lovely-float {
+  0% {
+    transform: translate(0, 0) scale(0.8) rotate(0deg);
+  }
+  33% {
+    transform: translate(30px, -40px) scale(1) rotate(15deg);
+  }
+  66% {
+    transform: translate(-20px, -80px) scale(0.9) rotate(-10deg);
+  }
+  100% {
+    transform: translate(10px, -120px) scale(1.1) rotate(5deg);
+  }
+}

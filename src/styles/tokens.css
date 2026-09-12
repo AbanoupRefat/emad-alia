@@ -1,0 +1,76 @@
+:root {
+  /* Palette */
+  --copper-rose: #a86a65;
+  --dusty-rose: #ab8882;
+  --rosewater: #d8a694;
+  --china-doll: #e0cb89;
+  --plum-wine: #754b4d;
+
+  --ink: var(--plum-wine);
+  --paper: var(--china-doll);
+  --paper-soft: color-mix(in srgb, var(--china-doll) 60%, white);
+  --surface-mid: var(--rosewater);
+  --surface-muted: var(--dusty-rose);
+  --accent: var(--copper-rose);
+
+  /* Light Theme (Rose Water) - Default */
+  --bg-color: var(--rosewater);
+  --text-primary: var(--plum-wine);
+  --text-muted: #61383b;
+  --card-bg: rgba(255, 255, 255, 0.45);
+  --card-border: rgba(117, 75, 77, 0.25);
+  --card-text: var(--plum-wine);
+  --title-gradient: linear-gradient(135deg, #754b4d 0%, #a86a65 100%);
+  --cinema-bg: #0a0306;
+  --vignette-color: rgba(10, 3, 6, 0.9);
+  --heart-color: var(--plum-wine);
+  --star-color: var(--copper-rose);
+}
+
+body.theme-dark {
+  /* Dark Theme */
+  --bg-color: #0a0306;
+  --text-primary: var(--china-doll);
+  --text-muted: var(--dusty-rose);
+  --card-bg: rgba(10, 3, 6, 0.4);
+  --card-border: rgba(224, 203, 137, 0.15);
+  --card-text: var(--china-doll);
+  --title-gradient: linear-gradient(135deg, #e0cb89 0%, #d8a694 50%, #a86a65 100%);
+  --cinema-bg: #0a0306;
+  --vignette-color: rgba(10, 3, 6, 0.9);
+  --heart-color: var(--plum-wine);
+  --star-color: var(--copper-rose);
+}
+
+:root {
+  /* Type */
+  --font-display: "Cormorant Garamond", "Amiri", serif;
+  --font-display-ar: "Amiri", "Cormorant Garamond", serif;
+  --font-body: "Jost", "IBM Plex Sans Arabic", sans-serif;
+  --font-body-ar: "IBM Plex Sans Arabic", "Jost", sans-serif;
+
+  --step-display-lg: clamp(2.75rem, 6vw + 1rem, 6rem);
+  --step-display-md: clamp(1.75rem, 3vw + 1rem, 3rem);
+  --step-display-sm: clamp(1.25rem, 1.5vw + 0.8rem, 1.75rem);
+  --step-body: clamp(0.95rem, 0.4vw + 0.85rem, 1.05rem);
+  --step-label: 0.8rem;
+
+  --space-1: 0.5rem;
+  --space-2: 1rem;
+  --space-3: 1.75rem;
+  --space-4: 3rem;
+  --space-5: 5rem;
+
+  --radius-card: 2px; /* stationery, not app-card — near-zero radius on purpose */
+  --shadow-card: 0 30px 60px -30px rgba(117, 75, 77, 0.35);
+
+  --ease-reveal: cubic-bezier(0.16, 1, 0.3, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}

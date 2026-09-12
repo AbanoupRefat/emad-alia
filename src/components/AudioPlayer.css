@@ -1,0 +1,42 @@
+.audio-fab {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(10, 3, 6, 0.6);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(224, 203, 137, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 9999; /* Always on top of everything */
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  padding: 0;
+  outline: none;
+}
+
+.audio-fab:hover, .audio-fab:active {
+  background: rgba(10, 3, 6, 0.8);
+  border-color: rgba(224, 203, 137, 0.5);
+  transform: scale(1.05);
+}
+
+.audio-fab__icon {
+  font-size: 1.2rem;
+  line-height: 1;
+  color: var(--china-doll);
+  opacity: 0.9;
+}
+
+.audio-fab--muted {
+  opacity: 0.7;
+}
+
+.audio-fab--muted .audio-fab__icon {
+  filter: grayscale(100%);
+}

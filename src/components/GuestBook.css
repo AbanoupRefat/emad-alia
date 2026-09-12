@@ -1,0 +1,184 @@
+/* ─── Guestbook wrapper ───────────────────────────────────────────────────── */
+.guestbook {
+  width: 100%;
+  position: relative;
+  z-index: 1;
+}
+
+
+/* ─── Form ────────────────────────────────────────────────────────────────── */
+.guestbook__form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  text-align: left;
+  position: relative;
+  z-index: 1;
+}
+
+/* ─── Field ───────────────────────────────────────────────────────────────── */
+.guestbook__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.guestbook__label {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  color: var(--plum-wine);
+  opacity: 0.75;
+}
+
+/* Wax-seal input style: bottom-border only, transparent bg */
+.guestbook__field input,
+.guestbook__field textarea {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  padding: 0.55rem 0.1rem;
+  border: none;
+  border-bottom: 1.5px solid var(--dusty-rose);
+  background: transparent;
+  color: var(--plum-wine);
+  resize: none;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.guestbook__field input:focus,
+.guestbook__field textarea:focus {
+  border-bottom-color: var(--copper-rose);
+  box-shadow: 0 2px 0 rgba(168,106,101,0.18);
+}
+
+.guestbook__field input::placeholder,
+.guestbook__field textarea::placeholder {
+  color: rgba(117, 75, 77, 0.4);
+}
+
+/* ─── Submit button ───────────────────────────────────────────────────────── */
+.guestbook__btn {
+  margin-top: var(--space-1);
+  width: 100%;
+  border: none;
+  background: var(--plum-wine);
+  color: var(--china-doll);
+  padding: 0.9rem 1.25rem;
+  letter-spacing: 0.08em;
+  font-size: 0.85rem;
+  font-family: var(--font-display);
+  font-style: italic;
+  border-radius: 1px;
+  cursor: pointer;
+  transition: background 0.25s ease, transform 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 4px 18px rgba(117,75,77,0.22);
+}
+
+.guestbook__btn:hover:not(:disabled) {
+  background: var(--copper-rose);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(117,75,77,0.3);
+}
+
+.guestbook__btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.guestbook__btn:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+/* ─── Confirmation ────────────────────────────────────────────────────────── */
+.guestbook__confirm {
+  margin: 0;
+  font-size: 0.85rem;
+  font-style: italic;
+  color: var(--copper-rose);
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  animation: gb-confirm-in 0.5s ease forwards;
+}
+
+.guestbook__confirm-icon {
+  font-size: 1rem;
+  animation: gb-heartbeat 0.6s ease infinite alternate;
+}
+
+@keyframes gb-heartbeat {
+  from { transform: scale(1); }
+  to   { transform: scale(1.25); }
+}
+
+@keyframes gb-confirm-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─── Entry list ──────────────────────────────────────────────────────────── */
+.guestbook__list {
+  list-style: none;
+  margin: var(--space-3) 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  max-height: 32vh;
+  overflow-y: auto;
+  position: relative;
+  z-index: 1;
+  scrollbar-width: thin;
+  scrollbar-color: var(--dusty-rose) transparent;
+}
+
+/* ─── Envelope entry card ─────────────────────────────────────────────────── */
+.gb-envelope {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-1);
+  background: rgba(255,255,255,0.55);
+  border: 1px solid rgba(171, 136, 130, 0.3);
+  border-radius: 1px;
+  padding: 0.65rem 0.85rem;
+  animation: gb-envelope-in 0.5s ease forwards;
+  opacity: 0;
+}
+
+@keyframes gb-envelope-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.gb-envelope__seal {
+  font-size: 1rem;
+  color: var(--copper-rose);
+  line-height: 1;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.gb-envelope__body {
+  flex: 1;
+}
+
+.gb-envelope__name {
+  display: block;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 0.95rem;
+  color: var(--copper-rose);
+  margin-bottom: 2px;
+}
+
+.gb-envelope__msg {
+  margin: 0;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--plum-wine);
+}
+

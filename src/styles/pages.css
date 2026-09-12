@@ -1,0 +1,64 @@
+.page-hero {
+}
+
+.page-countdown {
+}
+
+.remind-btn {
+  display: inline-block;
+  margin-top: var(--space-3);
+  border: none;
+  background: var(--copper-rose);
+  color: var(--china-doll);
+  padding: 0.75rem 1.5rem;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  transition: background 0.2s var(--ease-reveal);
+}
+
+.remind-btn:hover {
+  background: var(--plum-wine);
+}
+
+.page-story {
+}
+
+.page-story__inner {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.page-location {
+}
+
+.page-location__note {
+  margin-top: var(--space-3);
+  font-style: italic;
+  font-size: 0.8rem;
+  color: var(--copper-rose);
+  border-top: 1px solid var(--dusty-rose);
+  padding-top: var(--space-2);
+}
+
+.page-guestbook {
+}
+
+.page-closing {
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+
+
+.page-closing__text {
+  text-align: center;
+  color: var(--text-primary);
+}
+
+.page-closing__text .eyebrow-en {
+  color: var(--text-muted);
+}

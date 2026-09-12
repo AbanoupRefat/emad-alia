@@ -1,0 +1,132 @@
+/* ─── Story Carousel Container ────────────────────────────────────────────── */
+.story-carousel-container {
+  width: 100vw;
+  margin-left: calc(-50vw + 50%); /* bleed out of bounds to touch edges */
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.story-carousel {
+  display: flex;
+  gap: var(--space-2);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  padding: 0 var(--space-3); /* side padding so first/last items sit nicely */
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none; /* Hide scrollbar for clean look */
+}
+
+.story-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+/* ─── Story Card ──────────────────────────────────────────────────────────── */
+.story-card {
+  flex: 0 0 80vw; /* take up 80% of width so next item peeks */
+  max-width: 320px;
+  scroll-snap-align: center;
+  scroll-snap-stop: always; /* Force it to act magnetic and not skip items */
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: var(--radius-card);
+  padding: var(--space-2);
+}
+
+@media (min-width: 768px) {
+  .story-carousel {
+    justify-content: center; /* Center on desktop */
+  }
+  .story-card {
+    flex: 0 0 320px;
+  }
+}
+
+/* ─── Card Image ──────────────────────────────────────────────────────────── */
+.story-card__image-wrapper {
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  border-radius: calc(var(--radius-card) - 4px);
+  overflow: hidden;
+  position: relative;
+}
+
+.story-card__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.story-card__overlay {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  background: rgba(10, 3, 6, 0.6);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border: 1px solid rgba(224, 203, 137, 0.2);
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.story-card__index {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 0.95rem;
+  color: var(--china-doll);
+  line-height: 1;
+  padding-right: 2px; /* optical center for italics */
+}
+
+/* ─── Card Content ────────────────────────────────────────────────────────── */
+.story-card__content {
+  text-align: center;
+  padding: 0 var(--space-1) var(--space-1);
+}
+
+.story-card__label {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: var(--step-display-md);
+  color: var(--text-primary);
+  margin: 0 0 0.4em;
+}
+
+.story-card__body {
+  font-size: 0.85rem;
+  line-height: 1.6;
+  margin: 0;
+  color: var(--text-muted);
+}
+
+.story-card__divider {
+  margin-top: var(--space-2);
+}
+
+.story-card__petal {
+  color: var(--copper-rose);
+  font-size: 0.75rem;
+  opacity: 0.6;
+}
+
+/* ─── Scroll Hint ─────────────────────────────────────────────────────────── */
+.story-carousel__hint {
+  text-align: center;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  opacity: 0.75;
+}
+
