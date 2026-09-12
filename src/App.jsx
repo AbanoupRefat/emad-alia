@@ -26,7 +26,7 @@ export default function App() {
           onTransitionComplete={() => setGatesComplete(true)}
         />
       )}
-      {gatesComplete && <AudioPlayer src="https://raw.githubusercontent.com/AbanoupRefat/emad-alia/main/public/media/perfect.m4a" />}
+      {gatesComplete && <AudioPlayer src="https://abanouprefat.github.io/emad-alia/media/perfect.m4a" />}
       <main className="snap-container">
         <Page1Hero />
         <PageCinema />

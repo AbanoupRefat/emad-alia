@@ -13,7 +13,7 @@ export const client = {
     area: "Orabi, Qobour El Oubour, Cairo",
     mapsUrl: "https://maps.google.com/?q=Casa+Maria+Villa+Orabi+Cairo",
     time: "7:00 PM",
-    image: "https://raw.githubusercontent.com/AbanoupRefat/emad-alia/main/public/media/venue.jpg",
+    image: "https://abanouprefat.github.io/emad-alia/media/venue.jpg",
   },
 
   story: [
@@ -21,19 +21,19 @@ export const client = {
       id: "proposal",
       label: "Proposal",
       body: "The moment Emad asked, and Alia said yes.",
-      image: "https://raw.githubusercontent.com/AbanoupRefat/emad-alia/main/public/media/story_proposal.jpg",
+      image: "https://abanouprefat.github.io/emad-alia/media/story_proposal.jpg",
     },
     {
       id: "engagement",
       label: "Engagement",
       body: "Family gathered to celebrate the promise between them.",
-      image: "https://raw.githubusercontent.com/AbanoupRefat/emad-alia/main/public/media/story_engagement.png",
+      image: "https://abanouprefat.github.io/emad-alia/media/story_engagement.png",
     },
     {
       id: "katb-ketab",
       label: "Katb El-Ketab",
       body: "Their marriage contract, written and blessed.",
-      image: "https://raw.githubusercontent.com/AbanoupRefat/emad-alia/main/public/media/story_katb_ketab.jpg",
+      image: "https://abanouprefat.github.io/emad-alia/media/story_katb_ketab.jpg",
     },
   ],
 
@@ -46,9 +46,9 @@ export const client = {
   ],
 
   heroVideo: {
-    mp4: "https://raw.githubusercontent.com/AbanoupRefat/emad-alia/main/public/media/couple_hero.mp4",
-    webm: "https://raw.githubusercontent.com/AbanoupRefat/emad-alia/main/public/media/couple_hero.webm",
-    poster: "https://raw.githubusercontent.com/AbanoupRefat/emad-alia/main/public/media/couple_hero_poster.jpg",
+    mp4: "https://abanouprefat.github.io/emad-alia/media/couple_hero.mp4",
+    webm: "https://abanouprefat.github.io/emad-alia/media/couple_hero.webm",
+    poster: "https://abanouprefat.github.io/emad-alia/media/couple_hero_poster.jpg",
   },
 
   closingMessage: "WE CAN'T WAIT TO CELEBRATE WITH YOU.",
