@@ -1,5 +1,7 @@
 # Emad & Alia — Wedding Invitation
 
+**Live Production Link**: [https://abanouprefat.github.io/emad-alia/](https://abanouprefat.github.io/emad-alia/)
+
 Built on the Da3wa platform pattern: Vite + React + GSAP + config-driven content.
 
 ## Run it
