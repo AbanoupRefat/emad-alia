@@ -5,6 +5,8 @@ export default function AudioPlayer({ src }) {
   const [isMuted, setIsMuted] = useState(false);
   const audioRef = useRef(null);
 
+  const wasPlayingBeforeHidden = useRef(false);
+
   useEffect(() => {
     // Try to play immediately when mounted (user just interacted with the gate, so it should be allowed)
     if (audioRef.current) {
@@ -28,6 +30,33 @@ export default function AudioPlayer({ src }) {
         setIsMuted(true); // Fallback to muted state if blocked
       });
     }
+  }, []);
+
+  // Automatically pause audio when user switches tabs or exits browser, resume when returning
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!audioRef.current) return;
+
+      if (document.hidden) {
+        if (!audioRef.current.paused) {
+          wasPlayingBeforeHidden.current = true;
+          audioRef.current.pause();
+        }
+      } else {
+        if (wasPlayingBeforeHidden.current) {
+          audioRef.current.play().catch(() => {});
+          wasPlayingBeforeHidden.current = false;
+        }
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("pagehide", handleVisibilityChange);
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("pagehide", handleVisibilityChange);
+    };
   }, []);
 
   const toggleMute = () => {
