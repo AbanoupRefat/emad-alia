@@ -12,7 +12,7 @@ export const client = {
     area: "Orabi - Obour - Cairo",
     mapsUrl: "https://maps.google.com/?q=Casa+Maria+Villa+Orabi+Cairo",
     time: "7:00 PM",
-    image: "https://abanouprefat.github.io/emad-alia/media/venue.jpg",
+    image: "/media/venue.jpg",
   },
 
   kidsNote: "We love your little ones, but for this event kindly leave them at home",
@@ -22,26 +22,26 @@ export const client = {
       id: "proposal",
       label: "Proposal",
       body: "The moment Emad asked, and Alia said yes.",
-      image: "https://abanouprefat.github.io/emad-alia/media/story_proposal.jpg",
+      image: "/media/story_proposal.jpg",
     },
     {
       id: "engagement",
       label: "Engagement",
       body: "Family gathered to celebrate the promise between them.",
-      image: "https://abanouprefat.github.io/emad-alia/media/story_engagement.png",
+      image: "/media/story_engagement.png",
     },
     {
       id: "katb-ketab",
       label: "Katb El-Ketab",
       body: "Their marriage contract, written and blessed.",
-      image: "https://abanouprefat.github.io/emad-alia/media/story_katb_ketab.jpg",
+      image: "/media/story_katb_ketab.jpg",
     },
   ],
 
   heroVideo: {
-    mp4: "https://abanouprefat.github.io/emad-alia/media/couple_hero.mp4",
-    webm: "https://abanouprefat.github.io/emad-alia/media/couple_hero.webm",
-    poster: "https://abanouprefat.github.io/emad-alia/media/couple_hero_poster.jpg",
+    mp4: "/media/couple_hero.mp4",
+    webm: "/media/couple_hero.webm",
+    poster: "/media/couple_hero_poster.jpg",
   },
 
   closingMessage: "WE CAN'T WAIT TO CELEBRATE WITH YOU.",
