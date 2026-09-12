@@ -37,11 +37,57 @@
 
 .page-location__note {
   margin-top: var(--space-3);
-  font-style: italic;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   color: var(--copper-rose);
   border-top: 1px solid var(--dusty-rose);
   padding-top: var(--space-2);
+}
+
+.kids-reminder-badge {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: var(--space-3);
+  padding: 0.85rem 1.35rem;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1.5px solid var(--copper-rose);
+  border-radius: 999px;
+  color: var(--plum-wine);
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  box-shadow: 0 4px 16px rgba(168, 106, 101, 0.15);
+  animation: kids-badge-float 2.8s ease-in-out infinite;
+  text-align: center;
+  line-height: 1.4;
+}
+
+.kids-reminder-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--copper-rose);
+  flex-shrink: 0;
+  animation: kids-heart-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes kids-badge-float {
+  0%, 100% {
+    transform: translateY(0);
+    box-shadow: 0 4px 16px rgba(168, 106, 101, 0.15);
+  }
+  50% {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(168, 106, 101, 0.3);
+    border-color: var(--plum-wine);
+  }
+}
+
+@keyframes kids-heart-pulse {
+  0%, 100% { transform: scale(1); }
+  50%      { transform: scale(1.2); }
 }
 
 .page-guestbook {

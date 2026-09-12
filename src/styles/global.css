@@ -79,16 +79,19 @@ body.scroll-locked .snap-container {
 }
 
 .eyebrow-en {
-  font-family: var(--font-display);
-  font-style: italic;
-  font-size: var(--step-display-sm);
-  letter-spacing: 0.02em;
+  font-family: var(--font-body);
+  font-style: normal;
+  font-weight: 500;
+  font-size: var(--step-label);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-muted);
 }
 
 .title-en {
   font-family: var(--font-display);
-  font-style: italic;
-  font-weight: 500;
+  font-style: normal;
+  font-weight: 600;
   font-size: var(--step-display-lg);
   line-height: 1.05;
   margin: 0;
@@ -96,18 +99,6 @@ body.scroll-locked .snap-container {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-}
-
-.title-ar {
-  font-family: var(--font-display-ar);
-  direction: rtl;
-  font-size: var(--step-display-md);
-  margin: 0.25em 0 0;
-}
-
-.body-ar {
-  font-family: var(--font-body-ar);
-  direction: rtl;
 }
 
 .scroll-hint {

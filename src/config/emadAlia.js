@@ -2,7 +2,6 @@
 // duplicate this file, swap the values, and point src/config/index.js at it.
 export const client = {
   namesEn: { groom: "Emad", bride: "Alia" },
-  namesAr: { groom: "عماد", bride: "عليا" },
 
   weddingDateISO: "2026-10-07T19:00:00+03:00", // Wed, 7 Oct 2026, 7:00 PM Cairo time
   weddingDayLabel: "Wednesday",
@@ -10,11 +9,13 @@ export const client = {
 
   venue: {
     name: "Casa Maria Villa",
-    area: "Orabi, Qobour El Oubour, Cairo",
+    area: "Orabi - Obour - Cairo",
     mapsUrl: "https://maps.google.com/?q=Casa+Maria+Villa+Orabi+Cairo",
     time: "7:00 PM",
     image: "https://abanouprefat.github.io/emad-alia/media/venue.jpg",
   },
+
+  kidsNote: "We love your little ones, but for this event kindly leave them at home",
 
   story: [
     {
@@ -35,14 +36,6 @@ export const client = {
       body: "Their marriage contract, written and blessed.",
       image: "https://abanouprefat.github.io/emad-alia/media/story_katb_ketab.jpg",
     },
-  ],
-
-  eventTimeline: [
-    { time: "7:00 PM", title: "Welcome & Cocktails" },
-    { time: "8:00 PM", title: "Grand Entrance" },
-    { time: "9:00 PM", title: "Dinner is Served" },
-    { time: "10:30 PM", title: "Cake Cutting" },
-    { time: "11:30 PM", title: "Party Time" },
   ],
 
   heroVideo: {
