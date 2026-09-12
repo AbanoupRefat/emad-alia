@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -16,7 +16,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  deploy:
+  build-and-deploy:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -37,6 +37,12 @@ jobs:
       - name: Build static site
         run: npm run build
 
+      - name: Deploy to gh-pages branch
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
@@ -45,6 +51,6 @@ jobs:
         with:
           path: "./dist"
 
-      - name: Deploy to GitHub Pages
+      - name: Deploy to GitHub Pages Action
         id: deployment
         uses: actions/deploy-pages@v4
