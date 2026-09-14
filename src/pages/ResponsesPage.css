@@ -1,12 +1,10 @@
-/* ─── Reset & Root ──────────────────────────────────────────────────────────── */
+/* ─── Reset & Root (Invitation Rose Water Theme) ────────────────────────────── */
 .rp-root {
   position: relative;
   min-height: 100dvh;
-  background:
-    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(180, 120, 80, 0.18) 0%, transparent 70%),
-    linear-gradient(160deg, #0e0a08 0%, #150f0b 40%, #1a100c 70%, #0e0a08 100%);
+  background: radial-gradient(120% 90% at 50% 0%, #f5ede8 0%, #e8d5cc 55%, #d8a694 100%);
   font-family: var(--font-body, "Jost", sans-serif);
-  color: #f0e6df;
+  color: var(--plum-wine, #754b4d);
   overflow-x: hidden;
 }
 
@@ -39,39 +37,39 @@
 
 .rp-header__eyebrow {
   font-family: var(--font-body, "Jost", sans-serif);
-  font-size: 0.68rem;
+  font-size: 0.7rem;
   letter-spacing: 0.35em;
   text-transform: uppercase;
-  color: #c9956a;
-  opacity: 0.7;
+  color: var(--copper-rose, #a86a65);
+  opacity: 0.85;
   margin: 0 0 0.75rem;
 }
 
 .rp-header__title {
   font-family: var(--font-display, "Cormorant Garamond", serif);
-  font-size: clamp(2.4rem, 6vw + 1rem, 4rem);
-  font-weight: 400;
+  font-size: clamp(2.4rem, 6vw + 1rem, 3.8rem);
+  font-weight: 500;
   font-style: italic;
-  color: #f0e6df;
+  color: var(--plum-wine, #754b4d);
   margin: 0 0 0.6rem;
   line-height: 1.05;
-  text-shadow: 0 2px 40px rgba(201, 149, 106, 0.25);
 }
 
 .rp-header__sub {
-  font-size: 0.78rem;
-  letter-spacing: 0.12em;
-  color: #c9956a;
-  opacity: 0.65;
-  margin: 0 0 2rem;
+  font-size: 0.82rem;
+  letter-spacing: 0.1em;
+  color: var(--copper-rose, #a86a65);
+  opacity: 0.9;
+  margin: 0 0 1.75rem;
   min-height: 1.2em;
 }
 
 .rp-header__divider {
   width: 60px;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(201, 149, 106, 0.5), transparent);
+  background: linear-gradient(90deg, transparent, var(--copper-rose, #a86a65), transparent);
   margin: 0 auto;
+  opacity: 0.5;
 }
 
 /* ─── Search ─────────────────────────────────────────────────────────────────── */
@@ -87,7 +85,8 @@
   left: 1rem;
   top: 50%;
   transform: translateY(-50%);
-  color: rgba(201, 149, 106, 0.5);
+  color: var(--copper-rose, #a86a65);
+  opacity: 0.7;
   pointer-events: none;
 }
 
@@ -95,25 +94,26 @@
   width: 100%;
   box-sizing: border-box;
   font-family: var(--font-body, "Jost", sans-serif);
-  font-size: 0.88rem;
+  font-size: 0.9rem;
   padding: 0.75rem 1rem 0.75rem 2.75rem;
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(201, 149, 106, 0.2);
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(171, 136, 130, 0.35);
   border-radius: 4px;
-  color: #f0e6df;
+  color: var(--plum-wine, #754b4d);
   outline: none;
-  transition: border-color 0.2s ease, background 0.2s ease;
+  transition: border-color 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
 }
 
 .rp-search:focus {
-  border-color: rgba(201, 149, 106, 0.55);
-  background: rgba(255, 255, 255, 0.08);
+  border-color: var(--copper-rose, #a86a65);
+  background: rgba(255, 255, 255, 0.65);
+  box-shadow: 0 4px 20px -6px rgba(117, 75, 77, 0.15);
 }
 
 .rp-search::placeholder {
-  color: rgba(240, 230, 223, 0.3);
+  color: rgba(117, 75, 77, 0.45);
 }
 
 /* ─── States ─────────────────────────────────────────────────────────────────── */
@@ -123,33 +123,33 @@
   align-items: center;
   gap: 1rem;
   padding: 4rem 1rem;
-  color: rgba(201, 149, 106, 0.65);
+  color: var(--copper-rose, #a86a65);
   font-style: italic;
   font-size: 0.95rem;
   text-align: center;
 }
 
 .rp-state--error {
-  color: rgba(220, 100, 80, 0.8);
+  color: #b54a4a;
 }
 
 .rp-error-detail {
-  font-size: 0.7rem;
-  background: rgba(220, 100, 80, 0.08);
-  border: 1px solid rgba(220, 100, 80, 0.2);
+  font-size: 0.72rem;
+  background: rgba(181, 74, 74, 0.08);
+  border: 1px solid rgba(181, 74, 74, 0.25);
   border-radius: 4px;
   padding: 0.6rem 0.9rem;
   max-width: 480px;
   white-space: pre-wrap;
   word-break: break-all;
-  color: rgba(220, 130, 110, 0.9);
+  color: #b54a4a;
   font-family: monospace;
 }
 
 .rp-retry-btn {
-  border: 1px solid rgba(220, 100, 80, 0.35);
-  background: rgba(220, 100, 80, 0.08);
-  color: rgba(220, 130, 110, 0.9);
+  border: 1px solid rgba(181, 74, 74, 0.35);
+  background: rgba(181, 74, 74, 0.06);
+  color: #b54a4a;
   padding: 0.55rem 1.4rem;
   border-radius: 3px;
   font-family: var(--font-display, "Cormorant Garamond", serif);
@@ -160,15 +160,15 @@
 }
 
 .rp-retry-btn:hover {
-  background: rgba(220, 100, 80, 0.15);
+  background: rgba(181, 74, 74, 0.12);
 }
 
 /* ─── Spinner ─────────────────────────────────────────────────────────────────── */
 .rp-spinner {
   width: 34px;
   height: 34px;
-  border: 2px solid rgba(201, 149, 106, 0.15);
-  border-top-color: rgba(201, 149, 106, 0.7);
+  border: 2.5px solid rgba(168, 106, 101, 0.2);
+  border-top-color: var(--copper-rose, #a86a65);
   border-radius: 50%;
   animation: rp-spin 0.8s linear infinite;
 }
@@ -189,31 +189,32 @@
   gap: 1rem;
 }
 
-/* ─── Card — Glassmorphism ───────────────────────────────────────────────────── */
+/* ─── Card — Glassmorphism Stationery ────────────────────────────────────────── */
 .rp-card {
   position: relative;
   display: flex;
   align-items: flex-start;
   gap: 0;
-  background: rgba(255, 255, 255, 0.04);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(201, 149, 106, 0.18);
-  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.58);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(171, 136, 130, 0.3);
+  border-radius: 4px;
   padding: 1.2rem 1rem 1.2rem 1.2rem;
   box-shadow:
-    0 4px 24px rgba(0, 0, 0, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+    0 8px 30px -10px rgba(117, 75, 77, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
   opacity: 0;
   animation: rp-card-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease, background 0.25s ease;
 }
 
 .rp-card:hover {
-  border-color: rgba(201, 149, 106, 0.35);
+  background: rgba(255, 255, 255, 0.72);
+  border-color: var(--copper-rose, #a86a65);
   box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.4),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    0 12px 36px -8px rgba(117, 75, 77, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8);
   transform: translateY(-2px);
 }
 
@@ -251,21 +252,22 @@
   font-style: italic;
   font-size: 1.1rem;
   font-weight: 600;
-  color: #d4a06a;
+  color: var(--copper-rose, #a86a65);
   flex-shrink: 0;
 }
 
 .rp-card__time {
-  font-size: 0.68rem;
+  font-size: 0.7rem;
   letter-spacing: 0.04em;
-  color: rgba(201, 149, 106, 0.45);
+  color: var(--dusty-rose, #ab8882);
+  opacity: 0.85;
 }
 
 .rp-card__message {
   margin: 0.3rem 0 0;
-  font-size: 0.88rem;
-  line-height: 1.65;
-  color: rgba(240, 230, 223, 0.8);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--plum-wine, #754b4d);
   white-space: pre-wrap;
   word-break: break-word;
 }
@@ -281,7 +283,7 @@
   background: transparent;
   border: 1px solid transparent;
   border-radius: 50%;
-  color: rgba(240, 230, 223, 0.2);
+  color: rgba(117, 75, 77, 0.3);
   cursor: pointer;
   margin-left: 0.5rem;
   margin-top: -2px;
@@ -289,16 +291,16 @@
 }
 
 .rp-card__delete:hover {
-  color: rgba(220, 100, 80, 0.8);
-  border-color: rgba(220, 100, 80, 0.3);
-  background: rgba(220, 100, 80, 0.1);
+  color: #b54a4a;
+  border-color: rgba(181, 74, 74, 0.3);
+  background: rgba(181, 74, 74, 0.08);
 }
 
 .rp-card__del-spinner {
   width: 12px;
   height: 12px;
-  border: 1.5px solid rgba(220, 100, 80, 0.3);
-  border-top-color: rgba(220, 100, 80, 0.9);
+  border: 1.5px solid rgba(181, 74, 74, 0.3);
+  border-top-color: #b54a4a;
   border-radius: 50%;
   animation: rp-spin 0.6s linear infinite;
 }
@@ -314,16 +316,17 @@
   font-style: italic;
   font-size: 0.95rem;
   letter-spacing: 0.08em;
-  color: rgba(201, 149, 106, 0.6);
+  color: var(--copper-rose, #a86a65);
   text-decoration: none;
-  border-bottom: 1px solid rgba(201, 149, 106, 0.2);
+  border-bottom: 1px dashed rgba(168, 106, 101, 0.4);
   padding-bottom: 2px;
-  transition: color 0.2s ease, border-color 0.2s ease;
+  transition: color 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+  opacity: 0.85;
 }
 
 .rp-footer__link:hover {
-  color: rgba(201, 149, 106, 0.95);
-  border-color: rgba(201, 149, 106, 0.5);
+  opacity: 1;
+  border-bottom-style: solid;
 }
 
 /* ─── Mobile ─────────────────────────────────────────────────────────────────── */

@@ -22,31 +22,38 @@ function SparklesBackground() {
     resize();
     window.addEventListener("resize", resize);
 
-    // Generate sparkle particles
-    const count = Math.min(120, Math.floor((window.innerWidth * window.innerHeight) / 8000));
+    // Generate sparkle particles using invitation palette
+    const colors = [
+      "hsl(7, 30%, 53%)",   // #a86a65 (Copper Rose)
+      "hsl(45, 55%, 70%)",  // #e0cb89 (China Doll / Warm Gold)
+      "hsl(16, 48%, 71%)",  // #d8a694 (Rosewater)
+      "hsl(356, 22%, 38%)", // #754b4d (Plum Wine)
+    ];
+
+    const count = Math.min(100, Math.floor((window.innerWidth * window.innerHeight) / 9000));
     const sparkles = Array.from({ length: count }, () => ({
       x: Math.random(),
       y: Math.random(),
-      r: Math.random() * 1.5 + 0.3,
+      r: Math.random() * 1.6 + 0.4,
       phase: Math.random() * Math.PI * 2,
-      speed: Math.random() * 0.008 + 0.003,
-      // cross arms for diamond shape
-      cross: Math.random() > 0.55,
+      speed: Math.random() * 0.007 + 0.002,
+      color: colors[Math.floor(Math.random() * colors.length)],
     }));
 
-    function drawStar(x, y, r, alpha) {
+    function drawStar(x, y, r, alpha, color) {
       ctx.save();
       ctx.globalAlpha = alpha;
-      ctx.fillStyle = `hsl(32, 60%, 78%)`;
+      ctx.fillStyle = color;
       ctx.beginPath();
       ctx.arc(x, y, r, 0, Math.PI * 2);
       ctx.fill();
-      // draw cross rays for larger sparkles
-      if (r > 1) {
-        ctx.strokeStyle = `hsl(32, 60%, 78%)`;
-        ctx.lineWidth = r * 0.4;
-        ctx.globalAlpha = alpha * 0.6;
-        const arm = r * 2.8;
+
+      // Draw subtle cross rays for larger sparkles
+      if (r > 1.1) {
+        ctx.strokeStyle = color;
+        ctx.lineWidth = r * 0.35;
+        ctx.globalAlpha = alpha * 0.55;
+        const arm = r * 2.6;
         ctx.beginPath();
         ctx.moveTo(x - arm, y); ctx.lineTo(x + arm, y);
         ctx.moveTo(x, y - arm); ctx.lineTo(x, y + arm);
@@ -58,12 +65,13 @@ function SparklesBackground() {
     function draw(t) {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       sparkles.forEach((s) => {
-        const alpha = ((Math.sin(t * s.speed + s.phase) + 1) / 2) * 0.85;
+        const alpha = ((Math.sin(t * s.speed + s.phase) + 1) / 2) * 0.8;
         drawStar(
           s.x * canvas.width,
           s.y * canvas.height,
           s.r,
-          alpha
+          alpha,
+          s.color
         );
       });
       animId = requestAnimationFrame(draw);
