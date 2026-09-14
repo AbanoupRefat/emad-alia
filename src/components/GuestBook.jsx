@@ -1,16 +1,13 @@
 import { useState } from "react";
 import "./GuestBook.css";
 
-const SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbyvsg_3JCVPBokpl6LeWSAKeJPO07Baqbl6Q-wh-oJPk60q41gddEh2hgnbqXDM9B7Y/exec";
+// ─── Paste your /exec URL here ───────────────────────────────────────────────
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxe5DjIyMU56bUCkQb0KduhTyQAFs7jfRRefrT18o9wjQFwQTeRaTpkYrh4h-6otK1Ydg/exec";
 
-// Sealed envelope entry card (shown after local submission feedback)
+/* Local card shown after a successful submission */
 function EnvelopeEntry({ entry, index }) {
   return (
-    <li
-      className="gb-envelope"
-      style={{ animationDelay: `${index * 0.1}s` }}
-    >
+    <li className="gb-envelope" style={{ animationDelay: `${index * 0.1}s` }}>
       <div className="gb-envelope__seal" aria-hidden="true">✿</div>
       <div className="gb-envelope__body">
         <strong className="gb-envelope__name">{entry.name}</strong>
@@ -21,18 +18,16 @@ function EnvelopeEntry({ entry, index }) {
 }
 
 /**
- * POST the entry as a JSON string body.
- * No Content-Type header = browser sends as text/plain (simple request),
- * so no CORS preflight is needed. The Apps Script reads the body via
- * e.postData.contents and parses it as JSON.
- * Field name is "note" to match the sheet's doPost: data.note.
+ * POST {name, message} as a plain-text JSON body.
+ * No Content-Type header → treated as text/plain (simple request) →
+ * no CORS preflight needed → works fine with mode:"no-cors".
+ * The Apps Script reads the body via e.postData.contents.
  */
-async function submitToSheet(name, message) {
+async function postToSheet(name, message) {
   await fetch(SCRIPT_URL, {
     method: "POST",
     mode:   "no-cors",
-    body:   JSON.stringify({ name, note: message }),
-    // intentionally no Content-Type → simple request, no preflight
+    body:   JSON.stringify({ name, message }),
   });
 }
 
@@ -44,15 +39,14 @@ export default function GuestBook() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!name.trim() || !message.trim()) return;
-    setStatus("sending");
+    const n = name.trim();
+    const m = message.trim();
+    if (!n || !m) return;
 
+    setStatus("sending");
     try {
-      await submitToSheet(name.trim(), message.trim());
-      setEntries((prev) => [
-        { name: name.trim(), message: message.trim(), id: Date.now() },
-        ...prev,
-      ]);
+      await postToSheet(n, m);
+      setEntries((prev) => [{ id: Date.now(), name: n, message: m }, ...prev]);
       setName("");
       setMessage("");
       setStatus("sent");
@@ -66,6 +60,7 @@ export default function GuestBook() {
   return (
     <div className="guestbook">
       <form className="guestbook__form" onSubmit={handleSubmit}>
+
         <label className="guestbook__field">
           <span className="guestbook__label">Your name</span>
           <input
@@ -88,7 +83,11 @@ export default function GuestBook() {
           />
         </label>
 
-        <button type="submit" className="guestbook__btn" disabled={status === "sending"}>
+        <button
+          type="submit"
+          className="guestbook__btn"
+          disabled={status === "sending"}
+        >
           {status === "sending" ? "Sealing…" : "✦ Send a message ✦"}
         </button>
 

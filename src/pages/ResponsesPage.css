@@ -100,6 +100,19 @@
   color: #b54a4a;
 }
 
+.rp-error-detail {
+  font-size: 0.7rem;
+  background: rgba(181,74,74,0.08);
+  border: 1px solid rgba(181,74,74,0.2);
+  border-radius: 2px;
+  padding: 0.5rem 0.75rem;
+  max-width: 480px;
+  white-space: pre-wrap;
+  word-break: break-all;
+  color: #b54a4a;
+  font-family: monospace;
+}
+
 .rp-retry-btn {
   border: 1px solid rgba(181,74,74,0.4);
   background: transparent;

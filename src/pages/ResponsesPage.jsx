@@ -1,73 +1,86 @@
 import { useState, useEffect } from "react";
 import "./ResponsesPage.css";
 
-const SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbyvsg_3JCVPBokpl6LeWSAKeJPO07Baqbl6Q-wh-oJPk60q41gddEh2hgnbqXDM9B7Y/exec";
+// ─── Same URL as GuestBook ────────────────────────────────────────────────────
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxe5DjIyMU56bUCkQb0KduhTyQAFs7jfRRefrT18o9wjQFwQTeRaTpkYrh4h-6otK1Ydg/exec";
 
 /**
- * ResponsesPage — private page for Emad & Alia only.
- * Accessible via /?view=responses
+ * Private page for Emad & Alia — /?view=responses
  *
- * Fetches all submitted messages from the Google Apps Script sheet
- * and displays them in a beautiful, stationery-card layout.
+ * doGet returns: { ok: true, messages: [{timestamp, name, message}, ...] }
+ * Messages are already reversed (newest first) by the Apps Script.
  */
 export default function ResponsesPage() {
-  const [entries, setEntries]   = useState([]);
-  const [status,  setStatus]    = useState("loading"); // loading | ready | error
-  const [search,  setSearch]    = useState("");
+  const [messages, setMessages] = useState([]);
+  const [status,   setStatus]   = useState("loading"); // loading | ready | error
+  const [search,   setSearch]   = useState("");
+  const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
-    const controller = new AbortController();
+    const ctrl = new AbortController();
 
-    // doGet returns a raw 2D array: [[timestamp, name, note], ...]
-    // Each row = sheet row in insertion order, newest last.
-    fetch(SCRIPT_URL, { signal: controller.signal })
-      .then((res) => res.json())
-      .then((rawData) => {
-        const rows = Array.isArray(rawData)
-          ? rawData
-              .filter((row) => row[1]) // skip blank / header rows
-              .map((row) => ({
-                timestamp: row[0], // Date object serialised as string
-                name:      row[1],
-                message:   row[2],
-              }))
-              .reverse()            // newest first
-          : [];
-        setEntries(rows);
+    fetch(SCRIPT_URL, { signal: ctrl.signal })
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return res.json();
+      })
+      .then((json) => {
+        let parsedMessages = [];
+
+        if (Array.isArray(json)) {
+          // Handles raw 2D array from sheet.getDataRange().getValues()
+          // e.g. [["Timestamp", "Name", "Message"], ["2026-09-14...", "John", "Congrats!"]]
+          const rows = json.slice(1); // skip header row if present
+          parsedMessages = rows
+            .filter((row) => row && (row[1] || row[2]))
+            .map((row) => ({
+              timestamp: row[0] ? new Date(row[0]).toLocaleDateString("en-GB", { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : "",
+              name: String(row[1] || "Anonymous"),
+              message: String(row[2] || ""),
+            }))
+            .reverse();
+        } else if (json && json.ok) {
+          parsedMessages = Array.isArray(json.messages) ? json.messages : [];
+        } else if (json && json.error) {
+          setErrorMsg(String(json.error));
+          setStatus("error");
+          return;
+        }
+
+        setMessages(parsedMessages);
         setStatus("ready");
       })
       .catch((err) => {
-        if (err.name !== "AbortError") {
-          console.error("Failed to load responses:", err);
-          setStatus("error");
-        }
+        if (err.name === "AbortError") return;
+        setErrorMsg(err.message);
+        setStatus("error");
       });
 
-    return () => controller.abort();
+    return () => ctrl.abort();
   }, []);
 
-  const filtered = entries.filter(
-    (entry) =>
-      entry.name?.toLowerCase().includes(search.toLowerCase()) ||
-      entry.message?.toLowerCase().includes(search.toLowerCase())
+  const filtered = messages.filter(
+    (m) =>
+      m.name?.toLowerCase().includes(search.toLowerCase()) ||
+      m.message?.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
     <div className="rp-root">
-      {/* ── Header ── */}
+
+      {/* Header */}
       <header className="rp-header">
         <p className="rp-header__eyebrow">Emad &amp; Alia · Private</p>
         <h1 className="rp-header__title">Guest Messages</h1>
         <p className="rp-header__sub">
           {status === "ready"
-            ? `${entries.length} ${entries.length === 1 ? "message" : "messages"} received`
+            ? `${messages.length} ${messages.length === 1 ? "message" : "messages"} received`
             : "\u00a0"}
         </p>
       </header>
 
-      {/* ── Search ── */}
-      {status === "ready" && entries.length > 0 && (
+      {/* Search */}
+      {status === "ready" && messages.length > 0 && (
         <div className="rp-search-wrap">
           <input
             id="rp-search"
@@ -81,7 +94,7 @@ export default function ResponsesPage() {
         </div>
       )}
 
-      {/* ── States ── */}
+      {/* Loading */}
       {status === "loading" && (
         <div className="rp-state">
           <div className="rp-spinner" aria-label="Loading…" />
@@ -89,55 +102,58 @@ export default function ResponsesPage() {
         </div>
       )}
 
+      {/* Error */}
       {status === "error" && (
         <div className="rp-state rp-state--error">
           <span className="rp-state__icon">✗</span>
-          <p>Couldn't load messages. Check your connection and refresh.</p>
+          <p>Couldn't load messages.</p>
+          {errorMsg && (
+            <pre className="rp-error-detail">{errorMsg}</pre>
+          )}
           <button className="rp-retry-btn" onClick={() => window.location.reload()}>
             Retry
           </button>
         </div>
       )}
 
-      {status === "ready" && entries.length === 0 && (
+      {/* Empty */}
+      {status === "ready" && messages.length === 0 && (
         <div className="rp-state">
           <span className="rp-state__icon">✉</span>
-          <p>No messages yet — be the first to wish the couple!</p>
+          <p>No messages yet.</p>
         </div>
       )}
 
-      {/* ── Cards grid ── */}
+      {/* Cards */}
       {status === "ready" && filtered.length > 0 && (
-        <ol className="rp-grid" reversed>
-          {filtered.map((entry, i) => (
+        <ol className="rp-grid">
+          {filtered.map((m, i) => (
             <li key={i} className="rp-card" style={{ animationDelay: `${i * 40}ms` }}>
               <div className="rp-card__seal" aria-hidden="true">✿</div>
               <div className="rp-card__body">
-                <strong className="rp-card__name">{entry.name}</strong>
-                {entry.timestamp && (
-                  <time className="rp-card__time">
-                    {new Date(entry.timestamp).toLocaleDateString("en-GB", {
-                      day: "numeric", month: "short", year: "numeric",
-                    })}
-                  </time>
+                <strong className="rp-card__name">{m.name}</strong>
+                {m.timestamp && (
+                  <time className="rp-card__time">{m.timestamp}</time>
                 )}
-                <p className="rp-card__message">{entry.message}</p>
+                <p className="rp-card__message">{m.message}</p>
               </div>
             </li>
           ))}
         </ol>
       )}
 
+      {/* No search results */}
       {status === "ready" && search && filtered.length === 0 && (
         <div className="rp-state">
           <p>No results for &ldquo;{search}&rdquo;</p>
         </div>
       )}
 
-      {/* ── Footer ── */}
+      {/* Footer */}
       <footer className="rp-footer">
         <a href="/" className="rp-footer__link">← Back to Invitation</a>
       </footer>
+
     </div>
   );
 }
