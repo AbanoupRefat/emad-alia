@@ -7,8 +7,8 @@ const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxe5DjIyMU56bUCkQb0K
 /**
  * Private page for Emad & Alia — /?view=responses
  *
- * doGet returns: { ok: true, messages: [{timestamp, name, message}, ...] }
- * Messages are already reversed (newest first) by the Apps Script.
+ * doGet returns: { result: "success", data: [{timestamp, name, message}, ...] }
+ * Data is filtered (no header row, no empty rows) by the Apps Script.
  */
 export default function ResponsesPage() {
   const [messages, setMessages] = useState([]);
@@ -25,30 +25,19 @@ export default function ResponsesPage() {
         return res.json();
       })
       .then((json) => {
-        let parsedMessages = [];
-
-        if (Array.isArray(json)) {
-          // Handles raw 2D array from sheet.getDataRange().getValues()
-          // e.g. [["Timestamp", "Name", "Message"], ["2026-09-14...", "John", "Congrats!"]]
-          const rows = json.slice(1); // skip header row if present
-          parsedMessages = rows
-            .filter((row) => row && (row[1] || row[2]))
-            .map((row) => ({
-              timestamp: row[0] ? new Date(row[0]).toLocaleDateString("en-GB", { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : "",
-              name: String(row[1] || "Anonymous"),
-              message: String(row[2] || ""),
-            }))
-            .reverse();
-        } else if (json && json.ok) {
-          parsedMessages = Array.isArray(json.messages) ? json.messages : [];
-        } else if (json && json.error) {
-          setErrorMsg(String(json.error));
+        // Apps Script returns { result: "success", data: [{timestamp, name, message}] }
+        if (json && json.result === "success") {
+          const msgs = Array.isArray(json.data) ? json.data : [];
+          // Reverse so newest messages appear first
+          setMessages([...msgs].reverse());
+          setStatus("ready");
+        } else if (json && json.result === "error") {
+          setErrorMsg(String(json.error || "Unknown error from script"));
           setStatus("error");
-          return;
+        } else {
+          setErrorMsg("Unexpected response from server");
+          setStatus("error");
         }
-
-        setMessages(parsedMessages);
-        setStatus("ready");
       })
       .catch((err) => {
         if (err.name === "AbortError") return;
