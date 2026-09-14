@@ -21,15 +21,18 @@ function EnvelopeEntry({ entry, index }) {
 }
 
 /**
- * Submits to the Google Apps Script using a no-cors fetch.
- * Because of no-cors the response is opaque — we optimistically
- * treat every non-network-error as success.
+ * POST the entry as a JSON string body.
+ * No Content-Type header = browser sends as text/plain (simple request),
+ * so no CORS preflight is needed. The Apps Script reads the body via
+ * e.postData.contents and parses it as JSON.
+ * Field name is "note" to match the sheet's doPost: data.note.
  */
 async function submitToSheet(name, message) {
-  const params = new URLSearchParams({ name, message });
-  await fetch(`${SCRIPT_URL}?${params.toString()}`, {
-    method: "GET",
-    mode: "no-cors",
+  await fetch(SCRIPT_URL, {
+    method: "POST",
+    mode:   "no-cors",
+    body:   JSON.stringify({ name, note: message }),
+    // intentionally no Content-Type → simple request, no preflight
   });
 }
 

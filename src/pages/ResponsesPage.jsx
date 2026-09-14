@@ -19,11 +19,21 @@ export default function ResponsesPage() {
   useEffect(() => {
     const controller = new AbortController();
 
-    fetch(`${SCRIPT_URL}?action=getAll`, { signal: controller.signal })
+    // doGet returns a raw 2D array: [[timestamp, name, note], ...]
+    // Each row = sheet row in insertion order, newest last.
+    fetch(SCRIPT_URL, { signal: controller.signal })
       .then((res) => res.json())
-      .then((data) => {
-        // Expect: { data: [{ name, message, timestamp }, ...] }
-        const rows = Array.isArray(data?.data) ? data.data : [];
+      .then((rawData) => {
+        const rows = Array.isArray(rawData)
+          ? rawData
+              .filter((row) => row[1]) // skip blank / header rows
+              .map((row) => ({
+                timestamp: row[0], // Date object serialised as string
+                name:      row[1],
+                message:   row[2],
+              }))
+              .reverse()            // newest first
+          : [];
         setEntries(rows);
         setStatus("ready");
       })
@@ -38,9 +48,9 @@ export default function ResponsesPage() {
   }, []);
 
   const filtered = entries.filter(
-    (e) =>
-      e.name?.toLowerCase().includes(search.toLowerCase()) ||
-      e.message?.toLowerCase().includes(search.toLowerCase())
+    (entry) =>
+      entry.name?.toLowerCase().includes(search.toLowerCase()) ||
+      entry.message?.toLowerCase().includes(search.toLowerCase())
   );
 
   return (
