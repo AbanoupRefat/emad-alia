@@ -87,6 +87,25 @@ function SparklesBackground() {
   return <canvas ref={canvasRef} className="rp-sparkles" aria-hidden="true" />;
 }
 
+// ─── Format Timestamp to Egypt Time (Day HH:mm) ─────────────────────────────
+function formatEgyptTime(ts) {
+  if (!ts) return "";
+  const d = new Date(ts);
+  if (isNaN(d.getTime())) return String(ts);
+
+  try {
+    return new Intl.DateTimeFormat("en-US", {
+      timeZone: "Africa/Cairo",
+      weekday:  "short",
+      hour:     "2-digit",
+      minute:   "2-digit",
+      hour12:   false,
+    }).format(d);
+  } catch {
+    return String(ts);
+  }
+}
+
 // ─── Delete from Sheet ───────────────────────────────────────────────────────
 async function deleteFromSheet(rowIndex) {
   // no-cors: opaque response, but the request reaches Apps Script just fine
@@ -122,7 +141,7 @@ function MessageCard({ msg, index, onDelete }) {
         <div className="rp-card__top">
           <strong className="rp-card__name">{msg.name}</strong>
           {msg.timestamp && (
-            <time className="rp-card__time">{msg.timestamp}</time>
+            <time className="rp-card__time">{formatEgyptTime(msg.timestamp)}</time>
           )}
         </div>
         <p className="rp-card__message">{msg.message}</p>
