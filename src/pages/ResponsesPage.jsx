@@ -87,7 +87,7 @@ function SparklesBackground() {
   return <canvas ref={canvasRef} className="rp-sparkles" aria-hidden="true" />;
 }
 
-// ─── Format Timestamp to Egypt Time (14 Sep 20:08) ──────────────────────────
+// ─── Format Timestamp to Egypt Time (14 Sep 2026, 20:08) ────────────────────
 function formatEgyptTime(ts) {
   if (!ts) return "";
   const d = new Date(ts);
@@ -98,12 +98,11 @@ function formatEgyptTime(ts) {
       timeZone: "Africa/Cairo",
       day:      "2-digit",
       month:    "short",
+      year:     "numeric",
       hour:     "2-digit",
       minute:   "2-digit",
       hour12:   false,
-    })
-      .format(d)
-      .replace(",", "");
+    }).format(d);
   } catch {
     return String(ts);
   }
