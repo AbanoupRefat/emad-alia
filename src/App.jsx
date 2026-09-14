@@ -9,10 +9,19 @@ import Page5GuestBook from "./pages/Page5GuestBook";
 import Page6Closing from "./pages/Page6Closing";
 import AudioPlayer from "./components/AudioPlayer";
 import GlobalBackground from "./components/GlobalBackground";
+import ResponsesPage from "./pages/ResponsesPage";
 import { client } from "./config/emadAlia";
+
+// ── Private responses view: accessible only via /?view=responses ──
+const isResponsesView =
+  new URLSearchParams(window.location.search).get("view") === "responses";
 
 export default function App() {
   const [gatesComplete, setGatesComplete] = useState(false);
+  const [audioStarted, setAudioStarted] = useState(false);
+
+  // Couple's private view — no gate, no music
+  if (isResponsesView) return <ResponsesPage />;
 
   return (
     <>
@@ -20,10 +29,12 @@ export default function App() {
       {!gatesComplete && (
         <GrandGates
           names={`${client.namesEn.groom} & ${client.namesEn.bride}`}
+          onOpened={() => setAudioStarted(true)}
           onTransitionComplete={() => setGatesComplete(true)}
         />
       )}
-      {gatesComplete && <AudioPlayer src="/media/perfect.m4a" />}
+      {/* Audio mounts the instant the gate opens so the music starts with the bloom effect */}
+      {audioStarted && <AudioPlayer src="/media/perfect.m4a" />}
       <main className="snap-container">
         <Page1Hero />
         <PageCinema />
@@ -36,4 +47,3 @@ export default function App() {
     </>
   );
 }
-

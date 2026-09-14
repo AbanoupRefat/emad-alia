@@ -182,3 +182,33 @@
   color: var(--plum-wine);
 }
 
+/* ─── View all messages link ──────────────────────────────────────────────── */
+.guestbook__view-link-wrap {
+  margin-top: var(--space-3);
+  text-align: center;
+}
+
+.guestbook__view-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 0.82rem;
+  letter-spacing: 0.09em;
+  color: var(--copper-rose);
+  text-decoration: none;
+  opacity: 0.75;
+  transition: opacity 0.2s ease, letter-spacing 0.2s ease;
+  border-bottom: 1px dashed rgba(168,106,101,0.35);
+  padding-bottom: 2px;
+}
+
+.guestbook__view-link:hover {
+  opacity: 1;
+  letter-spacing: 0.14em;
+}
+
+.guestbook__view-link-icon {
+  font-size: 0.9rem;
+}

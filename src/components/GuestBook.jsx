@@ -1,7 +1,10 @@
 import { useState } from "react";
 import "./GuestBook.css";
 
-// Sealed envelope entry card
+const SCRIPT_URL =
+  "https://script.google.com/macros/s/AKfycbyvsg_3JCVPBokpl6LeWSAKeJPO07Baqbl6Q-wh-oJPk60q41gddEh2hgnbqXDM9B7Y/exec";
+
+// Sealed envelope entry card (shown after local submission feedback)
 function EnvelopeEntry({ entry, index }) {
   return (
     <li
@@ -17,27 +20,44 @@ function EnvelopeEntry({ entry, index }) {
   );
 }
 
-async function submitMessage(entry) {
-  return Promise.resolve(entry);
+/**
+ * Submits to the Google Apps Script using a no-cors fetch.
+ * Because of no-cors the response is opaque — we optimistically
+ * treat every non-network-error as success.
+ */
+async function submitToSheet(name, message) {
+  const params = new URLSearchParams({ name, message });
+  await fetch(`${SCRIPT_URL}?${params.toString()}`, {
+    method: "GET",
+    mode: "no-cors",
+  });
 }
 
 export default function GuestBook() {
   const [name,    setName]    = useState("");
   const [message, setMessage] = useState("");
   const [entries, setEntries] = useState([]);
-  const [status,  setStatus]  = useState("idle"); // idle | sending | sent
+  const [status,  setStatus]  = useState("idle"); // idle | sending | sent | error
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!name.trim() || !message.trim()) return;
     setStatus("sending");
-    const entry = { name: name.trim(), message: message.trim(), id: Date.now() };
-    await submitMessage(entry);
-    setEntries((prev) => [entry, ...prev]);
-    setName("");
-    setMessage("");
-    setStatus("sent");
-    setTimeout(() => setStatus("idle"), 4000);
+
+    try {
+      await submitToSheet(name.trim(), message.trim());
+      setEntries((prev) => [
+        { name: name.trim(), message: message.trim(), id: Date.now() },
+        ...prev,
+      ]);
+      setName("");
+      setMessage("");
+      setStatus("sent");
+      setTimeout(() => setStatus("idle"), 5000);
+    } catch {
+      setStatus("error");
+      setTimeout(() => setStatus("idle"), 4000);
+    }
   };
 
   return (
@@ -75,6 +95,13 @@ export default function GuestBook() {
             Your wish was sealed with love
           </p>
         )}
+
+        {status === "error" && (
+          <p className="guestbook__confirm" style={{ color: "var(--copper-rose)" }}>
+            <span className="guestbook__confirm-icon">!</span>
+            Couldn't send — please try again
+          </p>
+        )}
       </form>
 
       {entries.length > 0 && (
@@ -87,4 +114,3 @@ export default function GuestBook() {
     </div>
   );
 }
-

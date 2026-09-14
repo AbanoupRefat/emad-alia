@@ -1,0 +1,226 @@
+/* ─── Root ─────────────────────────────────────────────────────────────────── */
+.rp-root {
+  min-height: 100dvh;
+  background: radial-gradient(120% 90% at 50% 0%, #f5ede8 0%, #e8d5cc 60%, #d8a694 100%);
+  font-family: var(--font-body, "Jost", sans-serif);
+  color: var(--plum-wine, #754b4d);
+  padding: 0 1rem 4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+/* ─── Header ────────────────────────────────────────────────────────────────── */
+.rp-header {
+  text-align: center;
+  padding: 3.5rem 1rem 2rem;
+  max-width: 600px;
+  width: 100%;
+}
+
+.rp-header__eyebrow {
+  font-family: var(--font-body, "Jost", sans-serif);
+  font-size: 0.72rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--copper-rose, #a86a65);
+  opacity: 0.8;
+  margin: 0 0 0.6rem;
+}
+
+.rp-header__title {
+  font-family: var(--font-display, "Cormorant Garamond", serif);
+  font-size: clamp(2rem, 5vw + 1rem, 3.5rem);
+  font-weight: 500;
+  font-style: italic;
+  color: var(--plum-wine, #754b4d);
+  margin: 0 0 0.5rem;
+  line-height: 1.1;
+}
+
+.rp-header__sub {
+  font-size: 0.82rem;
+  letter-spacing: 0.08em;
+  color: var(--copper-rose, #a86a65);
+  margin: 0;
+  min-height: 1.2em;
+}
+
+/* ─── Search ─────────────────────────────────────────────────────────────────── */
+.rp-search-wrap {
+  width: 100%;
+  max-width: 540px;
+  margin-bottom: 2rem;
+}
+
+.rp-search {
+  width: 100%;
+  box-sizing: border-box;
+  font-family: var(--font-body, "Jost", sans-serif);
+  font-size: 0.9rem;
+  padding: 0.7rem 1rem;
+  border: none;
+  border-bottom: 1.5px solid var(--dusty-rose, #ab8882);
+  background: rgba(255,255,255,0.45);
+  color: var(--plum-wine, #754b4d);
+  outline: none;
+  border-radius: 1px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.rp-search:focus {
+  border-bottom-color: var(--copper-rose, #a86a65);
+  box-shadow: 0 2px 0 rgba(168,106,101,0.18);
+}
+
+.rp-search::placeholder {
+  color: rgba(117,75,77,0.4);
+}
+
+/* ─── States ─────────────────────────────────────────────────────────────────── */
+.rp-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 3rem 1rem;
+  color: var(--copper-rose, #a86a65);
+  font-style: italic;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+.rp-state__icon {
+  font-size: 2rem;
+  opacity: 0.55;
+}
+
+.rp-state--error {
+  color: #b54a4a;
+}
+
+.rp-retry-btn {
+  border: 1px solid rgba(181,74,74,0.4);
+  background: transparent;
+  color: #b54a4a;
+  padding: 0.5rem 1.25rem;
+  border-radius: 1px;
+  font-family: var(--font-display, "Cormorant Garamond", serif);
+  font-style: italic;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s ease;
+}
+
+.rp-retry-btn:hover {
+  background: rgba(181,74,74,0.08);
+}
+
+/* ─── Spinner ────────────────────────────────────────────────────────────────── */
+.rp-spinner {
+  width: 36px;
+  height: 36px;
+  border: 2.5px solid rgba(168,106,101,0.2);
+  border-top-color: var(--copper-rose, #a86a65);
+  border-radius: 50%;
+  animation: rp-spin 0.75s linear infinite;
+}
+
+@keyframes rp-spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ─── Grid ───────────────────────────────────────────────────────────────────── */
+.rp-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  max-width: 640px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.85rem;
+}
+
+/* ─── Card ───────────────────────────────────────────────────────────────────── */
+.rp-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  background: rgba(255,255,255,0.6);
+  border: 1px solid rgba(171,136,130,0.28);
+  border-radius: 2px;
+  padding: 1rem 1.15rem;
+  box-shadow: 0 4px 20px -8px rgba(117,75,77,0.15);
+  opacity: 0;
+  animation: rp-card-in 0.45s var(--ease-reveal, cubic-bezier(0.16,1,0.3,1)) forwards;
+  backdrop-filter: blur(4px);
+}
+
+@keyframes rp-card-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.rp-card__seal {
+  font-size: 1.1rem;
+  color: var(--copper-rose, #a86a65);
+  flex-shrink: 0;
+  margin-top: 2px;
+  opacity: 0.8;
+}
+
+.rp-card__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.rp-card__name {
+  font-family: var(--font-display, "Cormorant Garamond", serif);
+  font-style: italic;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--copper-rose, #a86a65);
+  display: block;
+}
+
+.rp-card__time {
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  color: var(--dusty-rose, #ab8882);
+  opacity: 0.75;
+}
+
+.rp-card__message {
+  margin: 0.25rem 0 0;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--plum-wine, #754b4d);
+  white-space: pre-wrap;
+}
+
+/* ─── Footer ─────────────────────────────────────────────────────────────────── */
+.rp-footer {
+  margin-top: 3rem;
+  text-align: center;
+}
+
+.rp-footer__link {
+  font-family: var(--font-display, "Cormorant Garamond", serif);
+  font-style: italic;
+  font-size: 0.9rem;
+  letter-spacing: 0.08em;
+  color: var(--copper-rose, #a86a65);
+  text-decoration: none;
+  opacity: 0.7;
+  border-bottom: 1px dashed rgba(168,106,101,0.4);
+  padding-bottom: 2px;
+  transition: opacity 0.2s ease;
+}
+
+.rp-footer__link:hover {
+  opacity: 1;
+}
