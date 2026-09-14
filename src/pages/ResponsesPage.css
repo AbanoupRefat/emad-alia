@@ -473,6 +473,163 @@
   box-shadow: 0 8px 20px -4px rgba(168, 106, 101, 0.22);
 }
 
+/* ─── Custom Glassmorphism Modal ─────────────────────────────────────────────── */
+.rp-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: rgba(14, 10, 8, 0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  animation: rp-fade-in 0.25s ease forwards;
+}
+
+@keyframes rp-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.rp-modal {
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(168, 106, 101, 0.35);
+  border-radius: 12px;
+  padding: 1.75rem 1.5rem 1.5rem;
+  box-shadow:
+    0 24px 60px -12px rgba(117, 75, 77, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  text-align: center;
+  animation: rp-modal-pop 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  overflow: hidden;
+}
+
+@keyframes rp-modal-pop {
+  from { opacity: 0; transform: scale(0.92) translateY(12px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+.rp-modal__shimmer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--copper-rose, #a86a65), transparent);
+}
+
+.rp-modal__title {
+  font-family: var(--font-display, "Cormorant Garamond", serif);
+  font-style: italic;
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: var(--plum-wine, #754b4d);
+  margin: 0 0 0.6rem;
+}
+
+.rp-modal__text {
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--plum-wine, #754b4d);
+  opacity: 0.9;
+  margin: 0 0 1.5rem;
+}
+
+.rp-modal__actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
+.rp-modal__btn {
+  flex: 1;
+  padding: 0.65rem 1.25rem;
+  border-radius: 100px;
+  font-family: var(--font-display, "Cormorant Garamond", serif);
+  font-style: italic;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  outline: none;
+}
+
+.rp-modal__btn--cancel {
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(171, 136, 130, 0.4);
+  color: var(--plum-wine, #754b4d);
+}
+
+.rp-modal__btn--cancel:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.8);
+}
+
+.rp-modal__btn--delete {
+  background: #b54a4a;
+  border: 1px solid rgba(181, 74, 74, 0.4);
+  color: #ffffff;
+  box-shadow: 0 4px 16px rgba(181, 74, 74, 0.25);
+}
+
+.rp-modal__btn--delete:hover:not(:disabled) {
+  background: #a33b3b;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(181, 74, 74, 0.35);
+}
+
+.rp-modal__btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* ─── Toast Notification ─────────────────────────────────────────────────────── */
+.rp-toast {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(168, 106, 101, 0.35);
+  border-radius: 100px;
+  padding: 0.65rem 1.4rem;
+  color: var(--plum-wine, #754b4d);
+  font-size: 0.88rem;
+  font-family: var(--font-body, "Jost", sans-serif);
+  box-shadow: 0 10px 30px -4px rgba(117, 75, 77, 0.22);
+  animation: rp-toast-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.rp-toast__icon {
+  width: 18px;
+  height: 18px;
+  background: rgba(168, 106, 101, 0.15);
+  color: var(--copper-rose, #a86a65);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+
+@keyframes rp-toast-in {
+  from { opacity: 0; transform: translate(-50%, 16px) scale(0.95); }
+  to   { opacity: 1; transform: translate(-50%, 0) scale(1); }
+}
+
 /* ─── Keyframe Utilities ─────────────────────────────────────────────────────── */
 @keyframes rp-fade-up {
   from { opacity: 0; transform: translateY(16px); }
@@ -510,4 +667,9 @@
     font-size: 0.88rem;
     padding: 0.75rem 1rem 0.75rem 2.6rem;
   }
+
+  .rp-modal {
+    padding: 1.5rem 1.15rem 1.25rem;
+  }
 }
+

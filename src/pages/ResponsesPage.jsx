@@ -190,26 +190,12 @@ async function deleteFromSheet(msg) {
 }
 
 // ─── Message Card ─────────────────────────────────────────────────────────────
-function MessageCard({ msg, index, onDelete }) {
-  const [deleting, setDeleting] = useState(false);
-
-  async function handleDelete() {
-    if (!window.confirm(`Remove message from ${msg.name}?`)) return;
-    setDeleting(true);
-    try {
-      await deleteFromSheet(msg);
-    } catch {
-      // no-cors mode throws on reading body — ignore
-    }
-    setTimeout(() => onDelete(index), 350);
-  }
-
+function MessageCard({ msg, index, onRequestDelete, isDeleting }) {
   return (
     <li
-      className={`rp-card${deleting ? " rp-card--out" : ""}`}
+      className={`rp-card${isDeleting ? " rp-card--out" : ""}`}
       style={{ animationDelay: `${index * 60}ms` }}
     >
-      {/* Shimmer top reflection bar */}
       <div className="rp-card__shimmer" aria-hidden="true" />
 
       <div className="rp-card__body">
@@ -224,12 +210,12 @@ function MessageCard({ msg, index, onDelete }) {
 
       <button
         className="rp-card__delete"
-        onClick={handleDelete}
-        disabled={deleting}
+        onClick={() => onRequestDelete(msg, index)}
+        disabled={isDeleting}
         aria-label={`Delete message from ${msg.name}`}
-        title="Delete"
+        title="Delete message"
       >
-        {deleting ? (
+        {isDeleting ? (
           <div className="rp-card__del-spinner" />
         ) : (
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
@@ -241,12 +227,62 @@ function MessageCard({ msg, index, onDelete }) {
   );
 }
 
+// ─── Custom Glassmorphism Confirm Modal ──────────────────────────────────────
+function ConfirmDeleteModal({ target, onConfirm, onCancel, deleting }) {
+  if (!target) return null;
+
+  return (
+    <div className="rp-modal-overlay" onClick={onCancel}>
+      <div className="rp-modal" onClick={(e) => e.stopPropagation()}>
+        <div className="rp-modal__shimmer" aria-hidden="true" />
+        <h3 className="rp-modal__title">Remove Wish?</h3>
+        <p className="rp-modal__text">
+          Are you sure you want to delete the message from{" "}
+          <strong>&ldquo;{target.msg.name}&rdquo;</strong>?
+        </p>
+
+        <div className="rp-modal__actions">
+          <button
+            className="rp-modal__btn rp-modal__btn--cancel"
+            onClick={onCancel}
+            disabled={deleting}
+          >
+            Cancel
+          </button>
+          <button
+            className="rp-modal__btn rp-modal__btn--delete"
+            onClick={onConfirm}
+            disabled={deleting}
+          >
+            {deleting ? "Deleting…" : "Delete Wish"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Toast Notification ───────────────────────────────────────────────────────
+function Toast({ message }) {
+  if (!message) return null;
+
+  return (
+    <div className="rp-toast" role="status">
+      <span className="rp-toast__icon">✓</span>
+      <span>{message}</span>
+    </div>
+  );
+}
+
 // ─── Main Responses Page ──────────────────────────────────────────────────────
 export default function ResponsesPage() {
-  const [messages, setMessages] = useState([]);
-  const [status,   setStatus]   = useState("loading");
-  const [search,   setSearch]   = useState("");
-  const [errorMsg, setErrorMsg] = useState("");
+  const [messages,      setMessages]      = useState([]);
+  const [status,        setStatus]        = useState("loading");
+  const [search,        setSearch]        = useState("");
+  const [errorMsg,      setErrorMsg]      = useState("");
+  const [deleteTarget,  setDeleteTarget]  = useState(null); // { msg, index }
+  const [isDeleting,    setIsDeleting]    = useState(false);
+  const [toastMsg,      setToastMsg]      = useState(null);
 
   useEffect(() => {
     const ctrl = new AbortController();
@@ -278,8 +314,38 @@ export default function ResponsesPage() {
     return () => ctrl.abort();
   }, []);
 
-  function handleDelete(idx) {
-    setMessages((prev) => prev.filter((_, i) => i !== idx));
+  function handleRequestDelete(msg, index) {
+    setDeleteTarget({ msg, index });
+  }
+
+  async function handleConfirmDelete() {
+    if (!deleteTarget) return;
+    setIsDeleting(true);
+
+    try {
+      await deleteFromSheet(deleteTarget.msg);
+    } catch {
+      // no-cors mode throws on reading body — ignore
+    }
+
+    const name = deleteTarget.msg.name;
+    const targetIdx = deleteTarget.index;
+
+    // Remove from state
+    setMessages((prev) => prev.filter((_, i) => i !== targetIdx));
+
+    setIsDeleting(false);
+    setDeleteTarget(null);
+
+    // Trigger Toast
+    setToastMsg(`Wish from "${name}" deleted`);
+    setTimeout(() => {
+      setToastMsg(null);
+    }, 3200);
+  }
+
+  function handleCancelDelete() {
+    setDeleteTarget(null);
   }
 
   const filtered = messages.filter(
@@ -290,13 +356,24 @@ export default function ResponsesPage() {
 
   return (
     <div className="rp-root">
-      {/* Background Animated Sparkles Canvas */}
+      {/* Background Animated Canvas */}
       <SparklesBackground />
 
-      {/* Floating Decorative Ambient Orbs */}
+      {/* Floating Ambient Orbs */}
       <div className="rp-orb rp-orb--1" aria-hidden="true" />
       <div className="rp-orb rp-orb--2" aria-hidden="true" />
       <div className="rp-orb rp-orb--3" aria-hidden="true" />
+
+      {/* Toast Notification */}
+      <Toast message={toastMsg} />
+
+      {/* Custom Glassmorphism Confirm Modal */}
+      <ConfirmDeleteModal
+        target={deleteTarget}
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
+        deleting={isDeleting}
+      />
 
       <div className="rp-content">
         {/* Header */}
@@ -370,7 +447,13 @@ export default function ResponsesPage() {
         {status === "ready" && filtered.length > 0 && (
           <ol className="rp-grid">
             {filtered.map((m, i) => (
-              <MessageCard key={`${m.name}-${i}`} msg={m} index={i} onDelete={handleDelete} />
+              <MessageCard
+                key={`${m.name}-${i}`}
+                msg={m}
+                index={i}
+                onRequestDelete={handleRequestDelete}
+                isDeleting={deleteTarget?.index === i && isDeleting}
+              />
             ))}
           </ol>
         )}
