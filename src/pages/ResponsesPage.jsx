@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import "./ResponsesPage.css";
 
 // ─── Same URL as GuestBook ────────────────────────────────────────────────────
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxe5DjIyMU56bUCkQb0KduhTyQAFs7jfRRefrT18o9wjQFwQTeRaTpkYrh4h-6otK1Ydg/exec";
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyvsg_3JCVPBokpl6LeWSAKeJPO07Baqbl6Q-wh-oJPk60q41gddEh2hgnbqXDM9B7Y/exec";
 
 /**
  * Private page for Emad & Alia — /?view=responses
