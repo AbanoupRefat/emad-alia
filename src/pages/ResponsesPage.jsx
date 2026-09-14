@@ -176,11 +176,16 @@ function formatEgyptTime(ts) {
 }
 
 // ─── Delete from Sheet ───────────────────────────────────────────────────────
-async function deleteFromSheet(rowIndex) {
+async function deleteFromSheet(msg) {
   await fetch(SCRIPT_URL, {
     method: "POST",
     mode:   "no-cors",
-    body:   JSON.stringify({ action: "delete", rowIndex }),
+    body:   JSON.stringify({
+      action:   "delete",
+      rowIndex: msg.rowIndex,
+      name:     msg.name,
+      message:  msg.message,
+    }),
   });
 }
 
@@ -192,7 +197,7 @@ function MessageCard({ msg, index, onDelete }) {
     if (!window.confirm(`Remove message from ${msg.name}?`)) return;
     setDeleting(true);
     try {
-      await deleteFromSheet(msg.rowIndex);
+      await deleteFromSheet(msg);
     } catch {
       // no-cors mode throws on reading body — ignore
     }
