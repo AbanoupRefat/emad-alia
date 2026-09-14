@@ -87,20 +87,23 @@ function SparklesBackground() {
   return <canvas ref={canvasRef} className="rp-sparkles" aria-hidden="true" />;
 }
 
-// ─── Format Timestamp to Egypt Time (Day HH:mm) ─────────────────────────────
+// ─── Format Timestamp to Egypt Time (14 Sep 20:08) ──────────────────────────
 function formatEgyptTime(ts) {
   if (!ts) return "";
   const d = new Date(ts);
   if (isNaN(d.getTime())) return String(ts);
 
   try {
-    return new Intl.DateTimeFormat("en-US", {
+    return new Intl.DateTimeFormat("en-GB", {
       timeZone: "Africa/Cairo",
-      weekday:  "short",
+      day:      "2-digit",
+      month:    "short",
       hour:     "2-digit",
       minute:   "2-digit",
       hour12:   false,
-    }).format(d);
+    })
+      .format(d)
+      .replace(",", "");
   } catch {
     return String(ts);
   }
