@@ -1,18 +1,127 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import "./ResponsesPage.css";
 
-// ─── Same URL as GuestBook ────────────────────────────────────────────────────
-const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyvsg_3JCVPBokpl6LeWSAKeJPO07Baqbl6Q-wh-oJPk60q41gddEh2hgnbqXDM9B7Y/exec";
+// ─── Apps Script URL ──────────────────────────────────────────────────────────
+const SCRIPT_URL =
+  "https://script.google.com/macros/s/AKfycbyvsg_3JCVPBokpl6LeWSAKeJPO07Baqbl6Q-wh-oJPk60q41gddEh2hgnbqXDM9B7Y/exec";
 
-/**
- * Private page for Emad & Alia — /?view=responses
- *
- * doGet returns: { result: "success", data: [{timestamp, name, message}, ...] }
- * Data is filtered (no header row, no empty rows) by the Apps Script.
- */
+// ─── Sparkles Canvas ──────────────────────────────────────────────────────────
+function SparklesBackground() {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    let animId;
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resize();
+    window.addEventListener("resize", resize);
+
+    // Generate sparkle particles
+    const count = Math.min(120, Math.floor((window.innerWidth * window.innerHeight) / 8000));
+    const sparkles = Array.from({ length: count }, () => ({
+      x: Math.random(),
+      y: Math.random(),
+      r: Math.random() * 1.5 + 0.3,
+      phase: Math.random() * Math.PI * 2,
+      speed: Math.random() * 0.008 + 0.003,
+      // cross arms for diamond shape
+      cross: Math.random() > 0.55,
+    }));
+
+    function drawStar(x, y, r, alpha) {
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = `hsl(32, 60%, 78%)`;
+      ctx.beginPath();
+      ctx.arc(x, y, r, 0, Math.PI * 2);
+      ctx.fill();
+      // draw cross rays for larger sparkles
+      if (r > 1) {
+        ctx.strokeStyle = `hsl(32, 60%, 78%)`;
+        ctx.lineWidth = r * 0.4;
+        ctx.globalAlpha = alpha * 0.6;
+        const arm = r * 2.8;
+        ctx.beginPath();
+        ctx.moveTo(x - arm, y); ctx.lineTo(x + arm, y);
+        ctx.moveTo(x, y - arm); ctx.lineTo(x, y + arm);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+
+    function draw(t) {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      sparkles.forEach((s) => {
+        const alpha = ((Math.sin(t * s.speed + s.phase) + 1) / 2) * 0.85;
+        drawStar(
+          s.x * canvas.width,
+          s.y * canvas.height,
+          s.r,
+          alpha
+        );
+      });
+      animId = requestAnimationFrame(draw);
+    }
+
+    animId = requestAnimationFrame(draw);
+    return () => {
+      cancelAnimationFrame(animId);
+      window.removeEventListener("resize", resize);
+    };
+  }, []);
+
+  return <canvas ref={canvasRef} className="rp-sparkles" aria-hidden="true" />;
+}
+
+// ─── Message Card ─────────────────────────────────────────────────────────────
+function MessageCard({ msg, index, onDelete }) {
+  const [deleting, setDeleting] = useState(false);
+
+  function handleDelete() {
+    if (!window.confirm(`Remove message from ${msg.name}?`)) return;
+    setDeleting(true);
+    // Animate out then call parent
+    setTimeout(() => onDelete(index), 320);
+  }
+
+  return (
+    <li
+      className={`rp-card${deleting ? " rp-card--out" : ""}`}
+      style={{ animationDelay: `${index * 50}ms` }}
+    >
+      <div className="rp-card__body">
+        <div className="rp-card__top">
+          <strong className="rp-card__name">{msg.name}</strong>
+          {msg.timestamp && (
+            <time className="rp-card__time">{msg.timestamp}</time>
+          )}
+        </div>
+        <p className="rp-card__message">{msg.message}</p>
+      </div>
+      <button
+        className="rp-card__delete"
+        onClick={handleDelete}
+        aria-label={`Delete message from ${msg.name}`}
+        title="Delete"
+      >
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M1 1L13 13M13 1L1 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+        </svg>
+      </button>
+    </li>
+  );
+}
+
+// ─── Main Page ────────────────────────────────────────────────────────────────
 export default function ResponsesPage() {
   const [messages, setMessages] = useState([]);
-  const [status,   setStatus]   = useState("loading"); // loading | ready | error
+  const [status,   setStatus]   = useState("loading");
   const [search,   setSearch]   = useState("");
   const [errorMsg, setErrorMsg] = useState("");
 
@@ -25,10 +134,8 @@ export default function ResponsesPage() {
         return res.json();
       })
       .then((json) => {
-        // Apps Script returns { result: "success", data: [{timestamp, name, message}] }
         if (json && json.result === "success") {
           const msgs = Array.isArray(json.data) ? json.data : [];
-          // Reverse so newest messages appear first
           setMessages([...msgs].reverse());
           setStatus("ready");
         } else if (json && json.result === "error") {
@@ -48,6 +155,10 @@ export default function ResponsesPage() {
     return () => ctrl.abort();
   }, []);
 
+  function handleDelete(idx) {
+    setMessages((prev) => prev.filter((_, i) => i !== idx));
+  }
+
   const filtered = messages.filter(
     (m) =>
       m.name?.toLowerCase().includes(search.toLowerCase()) ||
@@ -56,93 +167,87 @@ export default function ResponsesPage() {
 
   return (
     <div className="rp-root">
+      <SparklesBackground />
 
-      {/* Header */}
-      <header className="rp-header">
-        <p className="rp-header__eyebrow">Emad &amp; Alia · Private</p>
-        <h1 className="rp-header__title">Guest Messages</h1>
-        <p className="rp-header__sub">
-          {status === "ready"
-            ? `${messages.length} ${messages.length === 1 ? "message" : "messages"} received`
-            : "\u00a0"}
-        </p>
-      </header>
+      <div className="rp-content">
+        {/* Header */}
+        <header className="rp-header">
+          <p className="rp-header__eyebrow">Emad &amp; Alia &middot; Private</p>
+          <h1 className="rp-header__title">Guest Messages</h1>
+          <p className="rp-header__sub">
+            {status === "ready"
+              ? `${messages.length} ${messages.length === 1 ? "message" : "messages"} received`
+              : "\u00a0"}
+          </p>
+          <div className="rp-header__divider" aria-hidden="true" />
+        </header>
 
-      {/* Search */}
-      {status === "ready" && messages.length > 0 && (
-        <div className="rp-search-wrap">
-          <input
-            id="rp-search"
-            className="rp-search"
-            type="search"
-            placeholder="Search by name or message…"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            aria-label="Search messages"
-          />
-        </div>
-      )}
+        {/* Search */}
+        {status === "ready" && messages.length > 0 && (
+          <div className="rp-search-wrap">
+            <svg className="rp-search-icon" width="15" height="15" viewBox="0 0 15 15" fill="none">
+              <circle cx="6" cy="6" r="4.5" stroke="currentColor" strokeWidth="1.2"/>
+              <path d="M10 10L13.5 13.5" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round"/>
+            </svg>
+            <input
+              id="rp-search"
+              className="rp-search"
+              type="search"
+              placeholder="Search by name or message…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              aria-label="Search messages"
+            />
+          </div>
+        )}
 
-      {/* Loading */}
-      {status === "loading" && (
-        <div className="rp-state">
-          <div className="rp-spinner" aria-label="Loading…" />
-          <p>Loading messages…</p>
-        </div>
-      )}
+        {/* Loading */}
+        {status === "loading" && (
+          <div className="rp-state">
+            <div className="rp-spinner" aria-label="Loading…" />
+            <p>Loading messages…</p>
+          </div>
+        )}
 
-      {/* Error */}
-      {status === "error" && (
-        <div className="rp-state rp-state--error">
-          <span className="rp-state__icon">✗</span>
-          <p>Couldn't load messages.</p>
-          {errorMsg && (
-            <pre className="rp-error-detail">{errorMsg}</pre>
-          )}
-          <button className="rp-retry-btn" onClick={() => window.location.reload()}>
-            Retry
-          </button>
-        </div>
-      )}
+        {/* Error */}
+        {status === "error" && (
+          <div className="rp-state rp-state--error">
+            <p>Couldn't load messages.</p>
+            {errorMsg && <pre className="rp-error-detail">{errorMsg}</pre>}
+            <button className="rp-retry-btn" onClick={() => window.location.reload()}>
+              Retry
+            </button>
+          </div>
+        )}
 
-      {/* Empty */}
-      {status === "ready" && messages.length === 0 && (
-        <div className="rp-state">
-          <span className="rp-state__icon">✉</span>
-          <p>No messages yet.</p>
-        </div>
-      )}
+        {/* Empty */}
+        {status === "ready" && messages.length === 0 && (
+          <div className="rp-state">
+            <p>No messages yet — be the first to wish the couple!</p>
+          </div>
+        )}
 
-      {/* Cards */}
-      {status === "ready" && filtered.length > 0 && (
-        <ol className="rp-grid">
-          {filtered.map((m, i) => (
-            <li key={i} className="rp-card" style={{ animationDelay: `${i * 40}ms` }}>
-              <div className="rp-card__seal" aria-hidden="true">✿</div>
-              <div className="rp-card__body">
-                <strong className="rp-card__name">{m.name}</strong>
-                {m.timestamp && (
-                  <time className="rp-card__time">{m.timestamp}</time>
-                )}
-                <p className="rp-card__message">{m.message}</p>
-              </div>
-            </li>
-          ))}
-        </ol>
-      )}
+        {/* Cards */}
+        {status === "ready" && filtered.length > 0 && (
+          <ol className="rp-grid">
+            {filtered.map((m, i) => (
+              <MessageCard key={`${m.name}-${i}`} msg={m} index={i} onDelete={handleDelete} />
+            ))}
+          </ol>
+        )}
 
-      {/* No search results */}
-      {status === "ready" && search && filtered.length === 0 && (
-        <div className="rp-state">
-          <p>No results for &ldquo;{search}&rdquo;</p>
-        </div>
-      )}
+        {/* No search results */}
+        {status === "ready" && search && filtered.length === 0 && (
+          <div className="rp-state">
+            <p>No results for &ldquo;{search}&rdquo;</p>
+          </div>
+        )}
 
-      {/* Footer */}
-      <footer className="rp-footer">
-        <a href="/" className="rp-footer__link">← Back to Invitation</a>
-      </footer>
-
+        {/* Footer */}
+        <footer className="rp-footer">
+          <a href="/" className="rp-footer__link">Back to Invitation</a>
+        </footer>
+      </div>
     </div>
   );
 }
