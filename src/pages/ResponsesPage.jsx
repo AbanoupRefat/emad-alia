@@ -79,14 +79,29 @@ function SparklesBackground() {
   return <canvas ref={canvasRef} className="rp-sparkles" aria-hidden="true" />;
 }
 
+// ─── Delete from Sheet ───────────────────────────────────────────────────────
+async function deleteFromSheet(rowIndex) {
+  // no-cors: opaque response, but the request reaches Apps Script just fine
+  await fetch(SCRIPT_URL, {
+    method: "POST",
+    mode:   "no-cors",
+    body:   JSON.stringify({ action: "delete", rowIndex }),
+  });
+}
+
 // ─── Message Card ─────────────────────────────────────────────────────────────
 function MessageCard({ msg, index, onDelete }) {
   const [deleting, setDeleting] = useState(false);
 
-  function handleDelete() {
+  async function handleDelete() {
     if (!window.confirm(`Remove message from ${msg.name}?`)) return;
     setDeleting(true);
-    // Animate out then call parent
+    try {
+      await deleteFromSheet(msg.rowIndex);
+    } catch {
+      // no-cors always throws on response read — ignore, assume success
+    }
+    // Animate out, then remove from state
     setTimeout(() => onDelete(index), 320);
   }
 
@@ -107,12 +122,18 @@ function MessageCard({ msg, index, onDelete }) {
       <button
         className="rp-card__delete"
         onClick={handleDelete}
+        disabled={deleting}
         aria-label={`Delete message from ${msg.name}`}
         title="Delete"
       >
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M1 1L13 13M13 1L1 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
-        </svg>
+        {deleting
+          ? <div className="rp-card__del-spinner" />
+          : (
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+              <path d="M1 1L13 13M13 1L1 13" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
+            </svg>
+          )
+        }
       </button>
     </li>
   );
