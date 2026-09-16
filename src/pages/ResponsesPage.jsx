@@ -367,8 +367,14 @@ export default function ResponsesPage() {
 
   const goToPage = (page) => {
     setCurrentPage(page);
-    const gridEl = document.querySelector(".rp-grid");
-    if (gridEl) gridEl.scrollIntoView({ behavior: "smooth", block: "start" });
+    setTimeout(() => {
+      const target = document.querySelector(".rp-card") || document.querySelector(".rp-grid");
+      if (target) {
+        target.scrollIntoView({ behavior: "smooth", block: "start" });
+      } else {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+    }, 40);
   };
 
   return (
