@@ -5,6 +5,8 @@ import "./ResponsesPage.css";
 const SCRIPT_URL =
   "https://script.google.com/macros/s/AKfycbyvsg_3JCVPBokpl6LeWSAKeJPO07Baqbl6Q-wh-oJPk60q41gddEh2hgnbqXDM9B7Y/exec";
 
+const ITEMS_PER_PAGE = 6;
+
 // ─── Enhanced Sparkles & Interactive Trail Canvas ──────────────────────────────
 function SparklesBackground() {
   const canvasRef = useRef(null);
@@ -40,7 +42,7 @@ function SparklesBackground() {
       rotationSpeed: (Math.random() - 0.5) * 0.02,
       phase: Math.random() * Math.PI * 2,
       speed: Math.random() * 0.008 + 0.003,
-      vy: -(Math.random() * 0.00015 + 0.00005), // gentle upwards drift
+      vy: -(Math.random() * 0.00015 + 0.00005),
       color: colors[Math.floor(Math.random() * colors.length)],
       isStarburst: Math.random() > 0.4,
     }));
@@ -68,14 +70,12 @@ function SparklesBackground() {
     }
     window.addEventListener("pointermove", handlePointerMove);
 
-    // Draw a 4-point star burst
     function drawStarBurst(x, y, r, alpha, angle, color) {
       ctx.save();
       ctx.translate(x, y);
       ctx.rotate(angle);
       ctx.globalAlpha = alpha;
 
-      // Glow backdrop
       const grad = ctx.createRadialGradient(0, 0, 0, 0, 0, r * 4);
       grad.addColorStop(0, color.fill + (alpha * 0.45) + ")");
       grad.addColorStop(1, "transparent");
@@ -84,7 +84,6 @@ function SparklesBackground() {
       ctx.arc(0, 0, r * 4, 0, Math.PI * 2);
       ctx.fill();
 
-      // Core star
       ctx.fillStyle = color.stroke;
       ctx.beginPath();
       for (let i = 0; i < 4; i++) {
@@ -102,7 +101,6 @@ function SparklesBackground() {
     function draw(t) {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Render floating ambient background sparkles
       sparkles.forEach((s) => {
         s.y += s.vy;
         if (s.y < -0.05) s.y = 1.05;
@@ -125,7 +123,6 @@ function SparklesBackground() {
         }
       });
 
-      // Render interactive mouse/touch trail
       for (let i = trail.length - 1; i >= 0; i--) {
         const p = trail[i];
         p.x += p.vx;
@@ -210,7 +207,7 @@ function MessageCard({ msg, index, onRequestDelete, isDeleting }) {
 
       <button
         className="rp-card__delete"
-        onClick={() => onRequestDelete(msg, index)}
+        onClick={() => onRequestDelete(msg)}
         disabled={isDeleting}
         aria-label={`Delete message from ${msg.name}`}
         title="Delete message"
@@ -238,7 +235,7 @@ function ConfirmDeleteModal({ target, onConfirm, onCancel, deleting }) {
         <h3 className="rp-modal__title">Remove Wish?</h3>
         <p className="rp-modal__text">
           Are you sure you want to delete the message from{" "}
-          <strong>&ldquo;{target.msg.name}&rdquo;</strong>?
+          <strong>&ldquo;{target.name}&rdquo;</strong>?
         </p>
 
         <div className="rp-modal__actions">
@@ -280,9 +277,10 @@ export default function ResponsesPage() {
   const [status,        setStatus]        = useState("loading");
   const [search,        setSearch]        = useState("");
   const [errorMsg,      setErrorMsg]      = useState("");
-  const [deleteTarget,  setDeleteTarget]  = useState(null); // { msg, index }
+  const [deleteTarget,  setDeleteTarget]  = useState(null); // msg object
   const [isDeleting,    setIsDeleting]    = useState(false);
   const [toastMsg,      setToastMsg]      = useState(null);
+  const [currentPage,   setCurrentPage]   = useState(1);
 
   useEffect(() => {
     const ctrl = new AbortController();
@@ -295,7 +293,9 @@ export default function ResponsesPage() {
       .then((json) => {
         if (json && json.result === "success") {
           const msgs = Array.isArray(json.data) ? json.data : [];
-          setMessages([...msgs].reverse());
+          // Ensure LATEST (newest / highest rowIndex) responses come FIRST
+          const sorted = [...msgs].sort((a, b) => (b.rowIndex || 0) - (a.rowIndex || 0));
+          setMessages(sorted);
           setStatus("ready");
         } else if (json && json.result === "error") {
           setErrorMsg(String(json.error || "Unknown error from script"));
@@ -314,8 +314,8 @@ export default function ResponsesPage() {
     return () => ctrl.abort();
   }, []);
 
-  function handleRequestDelete(msg, index) {
-    setDeleteTarget({ msg, index });
+  function handleRequestDelete(msg) {
+    setDeleteTarget(msg);
   }
 
   async function handleConfirmDelete() {
@@ -323,16 +323,16 @@ export default function ResponsesPage() {
     setIsDeleting(true);
 
     try {
-      await deleteFromSheet(deleteTarget.msg);
+      await deleteFromSheet(deleteTarget);
     } catch {
       // no-cors mode throws on reading body — ignore
     }
 
-    const name = deleteTarget.msg.name;
-    const targetIdx = deleteTarget.index;
+    const name = deleteTarget.name;
+    const targetRowIndex = deleteTarget.rowIndex;
 
     // Remove from state
-    setMessages((prev) => prev.filter((_, i) => i !== targetIdx));
+    setMessages((prev) => prev.filter((m) => m.rowIndex !== targetRowIndex));
 
     setIsDeleting(false);
     setDeleteTarget(null);
@@ -348,11 +348,28 @@ export default function ResponsesPage() {
     setDeleteTarget(null);
   }
 
+  const handleSearchChange = (e) => {
+    setSearch(e.target.value);
+    setCurrentPage(1); // Reset to page 1 on search
+  };
+
   const filtered = messages.filter(
     (m) =>
       m.name?.toLowerCase().includes(search.toLowerCase()) ||
       m.message?.toLowerCase().includes(search.toLowerCase())
   );
+
+  // Pagination Logic
+  const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE));
+  const effectivePage = Math.min(currentPage, totalPages);
+  const startIndex = (effectivePage - 1) * ITEMS_PER_PAGE;
+  const paginatedMessages = filtered.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+  const goToPage = (page) => {
+    setCurrentPage(page);
+    const gridEl = document.querySelector(".rp-grid");
+    if (gridEl) gridEl.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   return (
     <div className="rp-root">
@@ -411,7 +428,7 @@ export default function ResponsesPage() {
               type="search"
               placeholder="Search by guest name or message…"
               value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              onChange={handleSearchChange}
               aria-label="Search messages"
             />
           </div>
@@ -445,17 +462,54 @@ export default function ResponsesPage() {
 
         {/* Cards Grid */}
         {status === "ready" && filtered.length > 0 && (
-          <ol className="rp-grid">
-            {filtered.map((m, i) => (
-              <MessageCard
-                key={`${m.name}-${i}`}
-                msg={m}
-                index={i}
-                onRequestDelete={handleRequestDelete}
-                isDeleting={deleteTarget?.index === i && isDeleting}
-              />
-            ))}
-          </ol>
+          <>
+            <ol className="rp-grid">
+              {paginatedMessages.map((m, i) => (
+                <MessageCard
+                  key={`${m.name}-${m.rowIndex || i}`}
+                  msg={m}
+                  index={i}
+                  onRequestDelete={handleRequestDelete}
+                  isDeleting={deleteTarget?.rowIndex === m.rowIndex && isDeleting}
+                />
+              ))}
+            </ol>
+
+            {/* Glassmorphism Pagination Controls */}
+            {totalPages > 1 && (
+              <nav className="rp-pagination" aria-label="Messages Pagination">
+                <button
+                  className="rp-pagination__btn"
+                  onClick={() => goToPage(effectivePage - 1)}
+                  disabled={effectivePage === 1}
+                  aria-label="Previous Page"
+                >
+                  &larr; Prev
+                </button>
+
+                <div className="rp-pagination__pages">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                    <button
+                      key={page}
+                      className={`rp-pagination__page${page === effectivePage ? " rp-pagination__page--active" : ""}`}
+                      onClick={() => goToPage(page)}
+                    >
+                      {page}
+                    </button>
+                  ))}
+                </div>
+
+                <button
+                  className="rp-pagination__btn"
+                  onClick={() => goToPage(effectivePage + 1)}
+                  disabled={effectivePage === totalPages}
+                  aria-label="Next Page"
+                >
+                  Next &rarr;
+                </button>
+              </nav>
+            )}
+          </>
         )}
 
         {/* No Search Results */}

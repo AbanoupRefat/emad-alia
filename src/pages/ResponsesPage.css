@@ -473,6 +473,82 @@
   box-shadow: 0 8px 20px -4px rgba(168, 106, 101, 0.22);
 }
 
+/* ─── Pagination Bar ─────────────────────────────────────────────────────────── */
+.rp-pagination {
+  margin-top: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  background: rgba(255, 255, 255, 0.45);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(168, 106, 101, 0.28);
+  padding: 0.5rem 0.85rem;
+  border-radius: 100px;
+  box-shadow: 0 8px 24px -6px rgba(117, 75, 77, 0.15);
+  animation: rp-fade-up 0.5s ease forwards;
+}
+
+.rp-pagination__btn {
+  background: rgba(255, 255, 255, 0.5);
+  border: 1px solid rgba(171, 136, 130, 0.3);
+  border-radius: 100px;
+  padding: 0.4rem 0.95rem;
+  font-family: var(--font-display, "Cormorant Garamond", serif);
+  font-style: italic;
+  font-size: 0.9rem;
+  color: var(--plum-wine, #754b4d);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.rp-pagination__btn:hover:not(:disabled) {
+  background: rgba(255, 255, 255, 0.85);
+  border-color: var(--copper-rose, #a86a65);
+  transform: translateY(-1px);
+}
+
+.rp-pagination__btn:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.rp-pagination__pages {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.rp-pagination__page {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 50%;
+  font-family: var(--font-body, "Jost", sans-serif);
+  font-size: 0.82rem;
+  color: var(--plum-wine, #754b4d);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.rp-pagination__page:hover:not(.rp-pagination__page--active) {
+  background: rgba(255, 255, 255, 0.5);
+  border-color: rgba(168, 106, 101, 0.3);
+}
+
+.rp-pagination__page--active {
+  background: var(--copper-rose, #a86a65);
+  color: #ffffff;
+  border-color: var(--copper-rose, #a86a65);
+  box-shadow: 0 4px 12px rgba(168, 106, 101, 0.35);
+  font-weight: 600;
+}
+
 /* ─── Custom Glassmorphism Modal ─────────────────────────────────────────────── */
 .rp-modal-overlay {
   position: fixed;
